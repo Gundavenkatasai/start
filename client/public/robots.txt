@@ -1,0 +1,20 @@
+# OpenBench Robots.txt
+# Disallow indexing of private dashboards, authentication, and API endpoints
+# Allow indexing of public landing and intake pages
+
+User-agent: *
+Allow: /
+Allow: /join
+Allow: /start-project
+
+# Disallow private dashboards and portals
+Disallow: /admin/
+Disallow: /talent/
+Disallow: /client/
+Disallow: /api/
+Disallow: /availability/
+Disallow: /login
+Disallow: /forgot-password
+
+# Sitemap
+Sitemap: https://openbench.io/sitemap.xml

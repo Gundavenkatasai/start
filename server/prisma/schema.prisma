@@ -1,0 +1,222 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String          @id @default(uuid())
+  email        String          @unique
+  passwordHash String
+  fullName     String
+  role         String          @default("TALENT") // ADMIN, TALENT, CLIENT
+  country      String
+  timezone     String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  talentProfile TalentProfile?
+  clientProfile ClientProfile?
+  projectsLed  Project[]       @relation("AdminLeadProjects")
+  auditLogs    AuditLog[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model TalentProfile {
+  id                          String                  @id @default(uuid())
+  userId                      String                  @unique
+  user                        User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status                      String                  @default("WAITLISTED") // WAITLISTED, VETTING, ACTIVE_BENCH, ON_PROJECT, ARCHIVED
+  primaryCategory             String                  // WEB_APP_DEV, UI_UX_DESIGN, VIDEO_EDITING, DIGITAL_MARKETING
+  skills                      String                  // JSON array string
+  portfolioUrls               String                  // JSON array string
+  yearsExperience             Int                     @default(1)
+  weeklyHours                 Int                     @default(40)
+  preferredCurrency           String                  @default("USD") // USD, GBP, EUR, INR
+  availabilityStatus          String                  @default("AVAILABLE_NOW") // AVAILABLE_NOW, LIMITED, UNAVAILABLE
+  lastAvailabilityConfirmedAt DateTime?
+  availabilityToken           String?                 @unique
+  internalRating              Float?
+  vettingNotes                String?
+  payoutMethod                String?                 // BANK_TRANSFER, UPI, WISE, IBAN
+  payoutDetails               String?                 // JSON string
+  panNumber                   String?
+  gstin                       String?
+  tdsCategory                 String                  @default("TECHNICAL_PROFESSIONAL_10") // TECHNICAL_PROFESSIONAL_10, CONTRACTUAL_1_OR_2, NONE
+  podMemberships              ProjectPodMember[]
+  deliverableSubmissions      DeliverableSubmission[]
+  createdAt                   DateTime                @default(now())
+  updatedAt                   DateTime                @updatedAt
+
+  @@index([status])
+  @@index([primaryCategory])
+  @@index([availabilityStatus])
+  @@index([availabilityToken])
+}
+
+model ClientProfile {
+  id              String    @id @default(uuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName     String
+  billingCurrency String    @default("USD") // USD, GBP, EUR, INR
+  billingCountry  String
+  taxId           String?
+  projects        Project[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([companyName])
+}
+
+model Project {
+  id                      String             @id @default(uuid())
+  clientId                String
+  client                  ClientProfile      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  leadAdminId             String?
+  leadAdmin               User?              @relation("AdminLeadProjects", fields: [leadAdminId], references: [id])
+  title                   String
+  category                String             // WEB_APP_DEV, UI_UX_DESIGN, VIDEO_EDITING, DIGITAL_MARKETING
+  scopeSummary            String
+  status                  String             @default("DRAFT_BRIEF") // DRAFT_BRIEF, SCOPING, POD_INVITES_SENT, IN_PROGRESS, COMPLETED, CANCELLED
+  currency                String             @default("USD") // USD, GBP, EUR, INR
+  grossBudgetMinorUnits   Int                @default(0) // Integer cents or paise
+  platformFeePercent      Float              @default(30.0) // Platform margin percentage (e.g. 30.0)
+  revisionCapPerMilestone Int                @default(2)
+  targetTimeline          String?
+  referenceLinks          String?            // JSON string array
+  podMembers              ProjectPodMember[]
+  milestones              Milestone[]
+  changeOrders            ChangeOrder[]
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+
+  @@index([status])
+  @@index([clientId])
+  @@index([leadAdminId])
+}
+
+model ProjectPodMember {
+  id               String            @id @default(uuid())
+  projectId        String
+  project          Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  talentId         String
+  talent           TalentProfile     @relation(fields: [talentId], references: [id], onDelete: Cascade)
+  roleTitle        String
+  sharePercent     Float             // e.g. 40.0 for 40%
+  payoutMinorUnits Int               // Fixed calculated payout amount in minor units
+  inviteStatus     String            @default("PENDING") // PENDING, ACCEPTED, DECLINED
+  signedName       String?
+  signedAt         DateTime?
+  signedIp         String?
+  declineReason    String?
+  payouts          ContractorPayout[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@unique([projectId, talentId])
+  @@index([inviteStatus])
+}
+
+model Milestone {
+  id                     String                  @id @default(uuid())
+  projectId              String
+  project                Project                 @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sequenceOrder          Int                     // 1, 2, 3
+  title                  String
+  deliverablesSummary    String
+  percentOfBudget        Float                   // default 50, 30, 20
+  amountMinorUnits       Int                     // in minor units
+  dueDate                DateTime?
+  status                 String                  @default("UPCOMING") // UPCOMING, PENDING_DEPOSIT, IN_PROGRESS, IN_QA_REVIEW, SUBMITTED_TO_CLIENT, REVISION_REQUESTED, APPROVED_PAID
+  revisionsUsed          Int                     @default(0)
+  paymentProvider        String?                 // STRIPE, RAZORPAY, SANDBOX
+  paymentIntentId        String?
+  paidAt                 DateTime?
+  deliverableSubmissions DeliverableSubmission[]
+  payouts                ContractorPayout[]
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+
+  @@index([projectId])
+  @@index([status])
+}
+
+model DeliverableSubmission {
+  id             String        @id @default(uuid())
+  milestoneId    String
+  milestone      Milestone     @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  submittedById  String
+  submittedBy    TalentProfile @relation(fields: [submittedById], references: [id])
+  deliverableUrl String
+  notes          String?
+  qaStatus       String        @default("PENDING_QA") // PENDING_QA, QA_APPROVED, QA_CHANGES_REQUESTED
+  qaFeedback     String?
+  clientFeedback String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([milestoneId])
+  @@index([qaStatus])
+}
+
+model ChangeOrder {
+  id                         String   @id @default(uuid())
+  projectId                  String
+  project                    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title                      String
+  description                String
+  additionalAmountMinorUnits Int
+  status                     String   @default("DRAFT") // DRAFT, PENDING_APPROVAL, APPROVED, REJECTED
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([status])
+}
+
+model ContractorPayout {
+  id                    String           @id @default(uuid())
+  milestoneId           String
+  milestone             Milestone        @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  podMemberId           String
+  podMember             ProjectPodMember @relation(fields: [podMemberId], references: [id], onDelete: Cascade)
+  grossAmountMinorUnits Int
+  tdsAmountMinorUnits   Int              @default(0)
+  netAmountMinorUnits   Int
+  currency              String
+  status                String           @default("LOCKED") // LOCKED, CLIENT_PAID, RELEASED
+  referenceId           String?
+  releasedAt            DateTime?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  @@index([milestoneId])
+  @@index([podMemberId])
+  @@index([status])
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  actorId      String?
+  actor        User?    @relation(fields: [actorId], references: [id])
+  action       String
+  entityType   String
+  entityId     String
+  metadataJson String?
+  createdAt    DateTime @default(now())
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+}
+
+model ProcessedWebhookEvent {
+  id          String   @id
+  provider    String   // STRIPE, RAZORPAY
+  eventType   String
+  processedAt DateTime @default(now())
+}
