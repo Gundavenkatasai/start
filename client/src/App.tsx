@@ -65,138 +65,138 @@ export const App: React.FC = () => {
       <ToastProvider>
         <BrowserRouter>
           <Routes>
-          {/* Public Website */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/join" element={<JoinWaitlistPage />} />
-          <Route path="/start-project" element={<StartProjectPage />} />
-          <Route path="/availability/:token" element={<AvailabilityConfirmPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            {/* Public Website */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/join" element={<JoinWaitlistPage />} />
+            <Route path="/start-project" element={<StartProjectPage />} />
+            <Route path="/availability/:token" element={<AvailabilityConfirmPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-          {/* Talent Bench Portal */}
-          <Route
-            path="/talent/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={['TALENT']}>
-                <TalentDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/talent/invitations/:id"
-            element={
-              <ProtectedRoute allowedRoles={['TALENT']}>
-                <TalentInvitationDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/talent/projects/:id"
-            element={
-              <ProtectedRoute allowedRoles={['TALENT']}>
-                <TalentProjectWorkspace />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/talent/payouts"
-            element={
-              <ProtectedRoute allowedRoles={['TALENT']}>
-                <TalentPayouts />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/talent/profile"
-            element={
-              <ProtectedRoute allowedRoles={['TALENT']}>
-                <TalentProfilePage />
-              </ProtectedRoute>
-            }
-          />
+            {/* Talent Bench Portal */}
+            <Route
+              path="/talent/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['TALENT']}>
+                  <TalentDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/talent/invitations/:id"
+              element={
+                <ProtectedRoute allowedRoles={['TALENT']}>
+                  <TalentInvitationDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/talent/projects/:id"
+              element={
+                <ProtectedRoute allowedRoles={['TALENT']}>
+                  <TalentProjectWorkspace />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/talent/payouts"
+              element={
+                <ProtectedRoute allowedRoles={['TALENT']}>
+                  <TalentPayouts />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/talent/profile"
+              element={
+                <ProtectedRoute allowedRoles={['TALENT']}>
+                  <TalentProfilePage />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Client Portal */}
-          <Route
-            path="/client/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={['CLIENT']}>
-                <ClientDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/client/projects/new"
-            element={
-              <ProtectedRoute allowedRoles={['CLIENT']}>
-                <ClientNewProject />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/client/projects/:id"
-            element={
-              <ProtectedRoute allowedRoles={['CLIENT']}>
-                <ClientProjectWorkspace />
-              </ProtectedRoute>
-            }
-          />
+            {/* Client Portal */}
+            <Route
+              path="/client/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['CLIENT']}>
+                  <ClientDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/client/projects/new"
+              element={
+                <ProtectedRoute allowedRoles={['CLIENT']}>
+                  <ClientNewProject />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/client/projects/:id"
+              element={
+                <ProtectedRoute allowedRoles={['CLIENT']}>
+                  <ClientProjectWorkspace />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Founder / Admin Ops Console */}
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/talent"
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <AdminTalentCRM />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/projects"
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <AdminProjectsList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/projects/:id/scope"
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <AdminProjectScoping />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/projects/:id/pod"
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <AdminPodAssembler />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/projects/:id/qa"
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <AdminQAGateAndPayoutLedger />
-              </ProtectedRoute>
-            }
-          />
+            {/* Founder / Admin Ops Console */}
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/talent"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminTalentCRM />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/projects"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminProjectsList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/projects/:id/scope"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminProjectScoping />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/projects/:id/pod"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminPodAssembler />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/projects/:id/qa"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminQAGateAndPayoutLedger />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Catch-all */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </ToastProvider>
-  </AuthProvider>
+            {/* Catch-all */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </ToastProvider>
+    </AuthProvider>
   );
 };
 

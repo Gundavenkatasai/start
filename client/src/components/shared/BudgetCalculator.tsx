@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Currency } from '../../types';
 import { formatCurrency } from '../../lib/formatters';
-import { ShieldCheck, Layers, Award, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Layers, Award, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Badge } from '../ui/Badge';
 
 export const BudgetCalculator: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
   const [currency, setCurrency] = useState<Currency>('USD');
@@ -36,33 +37,33 @@ export const BudgetCalculator: React.FC<{ compact?: boolean }> = ({ compact = fa
   };
 
   return (
-    <div className={`bg-white rounded-2xl border border-surface-border shadow-elevated ${compact ? 'p-5' : 'p-6 md:p-8'}`}>
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-surface-border">
+    <div className={`bg-white rounded-3xl border border-surface-border shadow-smooth transition-all ${compact ? 'p-5 sm:p-6' : 'p-6 sm:p-8 md:p-10'}`}>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-surface-border/80">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-blue-50 text-accent-cobalt border border-blue-200">
+          <div className="flex items-center gap-2 mb-2">
+            <Badge variant="primary" dot pulse>
               OPEN-BOOK PROTOCOL
-            </span>
-            <span className="text-xs font-mono text-ink-muted">70/30 Split Rule</span>
+            </Badge>
+            <span className="text-xs font-mono text-ink-muted">Transparent 70/30 Split</span>
           </div>
-          <h3 className="text-xl md:text-2xl font-bold text-ink-primary mt-1">
+          <h3 className="text-xl md:text-2xl font-bold text-ink-primary font-sans">
             Interactive Project Budget Calculator
           </h3>
-          <p className="text-sm text-ink-secondary mt-0.5">
-            100% transparency. Every dollar or rupee is mapped before work begins.
+          <p className="text-xs sm:text-sm text-ink-secondary mt-1">
+            Zero hidden markups. Every dollar, pound, euro, or rupee is auditable before contracts are signed.
           </p>
         </div>
 
         {/* Currency Selector */}
-        <div className="flex items-center bg-surface-secondary p-1 rounded-xl border border-surface-border self-start">
+        <div className="flex items-center bg-surface-secondary/80 p-1 rounded-2xl border border-surface-border self-start">
           {(['USD', 'GBP', 'EUR', 'INR'] as Currency[]).map((c) => (
             <button
               key={c}
               onClick={() => handleCurrencyChange(c)}
-              className={`px-3 py-1.5 text-xs font-mono font-semibold rounded-lg transition-all ${
+              className={`px-3 py-1.5 text-xs font-mono font-semibold rounded-xl transition-all duration-200 ${
                 currency === c
-                  ? 'bg-white text-ink-primary shadow-sm border border-surface-border'
-                  : 'text-ink-secondary hover:text-ink-primary'
+                  ? 'bg-white text-ink-primary shadow-subtle border border-surface-border'
+                  : 'text-ink-secondary hover:text-ink-primary hover:bg-white/50'
               }`}
             >
               {c === 'USD' && '$ USD'}
@@ -75,10 +76,10 @@ export const BudgetCalculator: React.FC<{ compact?: boolean }> = ({ compact = fa
       </div>
 
       {/* Budget Slider & Preset Buttons */}
-      <div className="py-6 border-b border-surface-border">
+      <div className="py-6 border-b border-surface-border/80">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-          <label className="text-sm font-semibold text-ink-secondary uppercase tracking-wider font-mono">
-            Sample Gross Project Budget
+          <label className="text-xs font-semibold text-ink-secondary uppercase tracking-wider font-mono">
+            Sample Gross Client Budget
           </label>
           <div className="text-2xl md:text-3xl font-extrabold font-mono text-accent-cobalt">
             {formatCurrency(minorUnits, currency)}
@@ -90,10 +91,10 @@ export const BudgetCalculator: React.FC<{ compact?: boolean }> = ({ compact = fa
             <button
               key={preset}
               onClick={() => setBudget(preset)}
-              className={`px-3 py-1 text-xs font-mono rounded-lg border transition-all ${
+              className={`px-3.5 py-1.5 text-xs font-mono rounded-xl border transition-all duration-200 ${
                 budget === preset
-                  ? 'bg-accent-cobalt text-white border-accent-cobalt'
-                  : 'bg-surface-subtle text-ink-secondary border-surface-border hover:bg-white'
+                  ? 'bg-accent-cobalt-light text-accent-cobalt border-accent-cobalt-border font-semibold shadow-subtle'
+                  : 'bg-white text-ink-secondary border-surface-border hover:bg-surface-subtle hover:border-slate-300'
               }`}
             >
               {formatCurrency(preset * 100, currency)}
@@ -103,158 +104,134 @@ export const BudgetCalculator: React.FC<{ compact?: boolean }> = ({ compact = fa
 
         <input
           type="range"
-          min={currency === 'INR' ? 100000 : 2500}
-          max={currency === 'INR' ? 10000000 : 100000}
-          step={currency === 'INR' ? 50000 : 500}
+          min={currencyPresets[currency][0]}
+          max={currencyPresets[currency][3]}
+          step={currency === 'INR' ? 50000 : 1000}
           value={budget}
           onChange={(e) => setBudget(Number(e.target.value))}
-          className="w-full h-2 bg-surface-secondary rounded-lg appearance-none cursor-pointer accent-accent-cobalt"
+          className="w-full h-2 bg-surface-secondary rounded-lg appearance-none cursor-pointer accent-accent-cobalt transition-colors"
         />
+        <div className="flex justify-between text-[11px] font-mono text-ink-muted mt-2">
+          <span>{formatCurrency(currencyPresets[currency][0] * 100, currency)}</span>
+          <span>{formatCurrency(currencyPresets[currency][3] * 100, currency)}</span>
+        </div>
       </div>
 
-      {/* 70/30 High-Level Split Strip */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-        {/* 70% Execution Pod */}
-        <div className="p-5 rounded-xl bg-emerald-50/60 border border-emerald-200">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-800">
-              70% Execution Pod Share
+      {/* Primary Split Showcase: 70% Talent Pod vs 30% Managed Delivery */}
+      <div className="py-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* 70% Talent Pod Card */}
+        <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-white to-emerald-50/30 border border-emerald-100 shadow-subtle relative overflow-hidden">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-accent-emerald flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-accent-emerald animate-pulse" />
+              Talent Pod Allocation
             </span>
-            <span className="text-xs px-2 py-0.5 rounded-full font-mono font-bold bg-accent-emerald text-white">
-              70.0%
-            </span>
+            <Badge variant="success">70.0% Payout</Badge>
           </div>
-          <div className="text-2xl md:text-3xl font-extrabold font-mono text-emerald-900 mt-2">
+          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-accent-emerald mb-1">
             {formatCurrency(podShare, currency)}
           </div>
-          <p className="text-xs text-emerald-700 mt-1">
-            Paid directly to the vetted senior specialists in the project pod based on assigned role weights.
+          <p className="text-xs text-ink-secondary leading-relaxed">
+            Directly distributed to the pre-vetted specialists in the execution pod. Fixed payouts guaranteed before contract acceptance.
           </p>
+
+          <div className="mt-4 pt-3 border-t border-emerald-100/80 flex items-center justify-between text-[11px] font-mono text-ink-secondary">
+            <span>Disbursed via Escrow</span>
+            <span className="text-accent-emerald font-semibold">Zero agency cuts</span>
+          </div>
         </div>
 
-        {/* 30% Platform & Ops */}
-        <div className="p-5 rounded-xl bg-slate-50 border border-slate-200">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-800">
-              30% Platform & Ops Margin
+        {/* 30% Platform Ops Card */}
+        <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-white to-blue-50/30 border border-blue-100 shadow-subtle relative overflow-hidden">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-accent-cobalt flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-accent-cobalt" />
+              Founder-Managed Delivery
             </span>
-            <span className="text-xs px-2 py-0.5 rounded-full font-mono font-bold bg-slate-800 text-white">
-              30.0%
-            </span>
+            <Badge variant="primary">30.0% Platform</Badge>
           </div>
-          <div className="text-2xl md:text-3xl font-extrabold font-mono text-slate-900 mt-2">
+          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-ink-primary mb-1">
             {formatCurrency(platformShare, currency)}
           </div>
-          <p className="text-xs text-slate-600 mt-1">
-            Covers 2-person founder scoping, QA review gate, contract administration, and delivery guarantee reserve.
+          <p className="text-xs text-ink-secondary leading-relaxed">
+            Covers personal founder scoping, milestone QA reviews, non-circumvention contracts, and backup reserve coverage.
           </p>
-        </div>
-      </div>
 
-      {/* Itemized Platform Breakdown */}
-      <div className="bg-surface-subtle p-5 rounded-xl border border-surface-border mb-6">
-        <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-muted mb-3">
-          Itemized Platform Margin Breakdown (30%)
-        </h4>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="p-3 bg-white rounded-lg border border-surface-border">
-            <div className="text-xs text-ink-secondary">Sales & Client Ops (12%)</div>
-            <div className="text-base font-bold font-mono text-ink-primary mt-0.5">
-              {formatCurrency(salesOps, currency)}
+          {/* Internal 30% breakdown */}
+          <div className="mt-4 pt-3 border-t border-blue-100/80 grid grid-cols-3 gap-2 text-[10px] font-mono text-ink-secondary">
+            <div className="bg-white/80 p-2 rounded-xl border border-surface-border text-center">
+              <div className="font-bold text-ink-primary">12%</div>
+              <div className="text-ink-muted text-[9px] mt-0.5">Sales & Ops</div>
             </div>
-            <div className="text-[11px] text-ink-muted mt-0.5">Invoicing, brief alignment, legal SOW</div>
-          </div>
-          <div className="p-3 bg-white rounded-lg border border-surface-border">
-            <div className="text-xs text-ink-secondary">Founder PM & QA Gate (10%)</div>
-            <div className="text-base font-bold font-mono text-ink-primary mt-0.5">
-              {formatCurrency(pmQa, currency)}
+            <div className="bg-white/80 p-2 rounded-xl border border-surface-border text-center">
+              <div className="font-bold text-accent-cobalt">10%</div>
+              <div className="text-ink-muted text-[9px] mt-0.5">QA & Review</div>
             </div>
-            <div className="text-[11px] text-ink-muted mt-0.5">Two founders test and review every milestone</div>
-          </div>
-          <div className="p-3 bg-white rounded-lg border border-surface-border">
-            <div className="text-xs text-ink-secondary">Backup Reserve & Float (8%)</div>
-            <div className="text-base font-bold font-mono text-ink-primary mt-0.5">
-              {formatCurrency(reserve, currency)}
+            <div className="bg-white/80 p-2 rounded-xl border border-surface-border text-center">
+              <div className="font-bold text-emerald-600">8%</div>
+              <div className="text-ink-muted text-[9px] mt-0.5">Reserve Fund</div>
             </div>
-            <div className="text-[11px] text-ink-muted mt-0.5">Instant backup talent replacement warranty</div>
           </div>
         </div>
       </div>
 
-      {/* 50/30/20 Milestone Delivery & Payout Schedule */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-muted">
-            50% / 30% / 20% Milestone Release Schedule
+      {/* 50 / 30 / 20 Milestone Escrow Schedule */}
+      <div className="mt-2 p-5 sm:p-6 rounded-2xl bg-surface-subtle/80 border border-surface-border">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
+          <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-primary flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-accent-cobalt" />
+            <span>Guaranteed 50 / 30 / 20 Milestone Escrow Schedule</span>
           </h4>
-          <span className="text-xs font-mono text-ink-secondary">Fixed Project Pricing</span>
+          <span className="text-[11px] font-mono text-ink-muted">Funds protected in neutral escrow</span>
         </div>
 
-        <div className="space-y-2.5">
-          <div className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-surface-border hover:border-accent-cobalt transition-colors">
-            <div className="flex items-center gap-3">
-              <span className="w-7 h-7 rounded-lg bg-blue-50 text-accent-cobalt font-mono font-bold text-xs flex items-center justify-center">
-                M1
-              </span>
-              <div>
-                <div className="text-sm font-semibold text-ink-primary">
-                  50% Upfront Deposit & Architecture Kickoff
-                </div>
-                <div className="text-xs text-ink-secondary">
-                  Locks the pod bench, establishes repository & Figma specs.
-                </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Milestone 1 */}
+          <div className="p-4 rounded-xl bg-white border border-surface-border/80 shadow-subtle flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-[11px] font-mono mb-1">
+                <span className="font-semibold text-accent-cobalt">Milestone 1 (50%)</span>
+                <span className="text-ink-muted">Upfront</span>
               </div>
-            </div>
-            <div className="text-right">
-              <div className="text-base font-bold font-mono text-ink-primary">
+              <div className="text-lg font-bold font-mono text-ink-primary">
                 {formatCurrency(m1, currency)}
               </div>
-              <span className="text-[11px] font-mono text-accent-emerald">50% Escrow</span>
             </div>
+            <p className="text-[11px] text-ink-secondary mt-2 leading-relaxed">
+              Deposited to lock pod members, initiate kickoff, and finalize technical specification.
+            </p>
           </div>
 
-          <div className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-surface-border hover:border-accent-cobalt transition-colors">
-            <div className="flex items-center gap-3">
-              <span className="w-7 h-7 rounded-lg bg-blue-50 text-accent-cobalt font-mono font-bold text-xs flex items-center justify-center">
-                M2
-              </span>
-              <div>
-                <div className="text-sm font-semibold text-ink-primary">
-                  30% Mid-Delivery & Founder QA Demo
-                </div>
-                <div className="text-xs text-ink-secondary">
-                  Functional preview, QA gate approval, client review round 1.
-                </div>
+          {/* Milestone 2 */}
+          <div className="p-4 rounded-xl bg-white border border-surface-border/80 shadow-subtle flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-[11px] font-mono mb-1">
+                <span className="font-semibold text-accent-cobalt">Milestone 2 (30%)</span>
+                <span className="text-ink-muted">Mid-Delivery</span>
               </div>
-            </div>
-            <div className="text-right">
-              <div className="text-base font-bold font-mono text-ink-primary">
+              <div className="text-lg font-bold font-mono text-ink-primary">
                 {formatCurrency(m2, currency)}
               </div>
-              <span className="text-[11px] font-mono text-ink-muted">30% Progress</span>
             </div>
+            <p className="text-[11px] text-ink-secondary mt-2 leading-relaxed">
+              Released upon completed prototype, code inspection, and core feature demonstration.
+            </p>
           </div>
 
-          <div className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-surface-border hover:border-accent-cobalt transition-colors">
-            <div className="flex items-center gap-3">
-              <span className="w-7 h-7 rounded-lg bg-blue-50 text-accent-cobalt font-mono font-bold text-xs flex items-center justify-center">
-                M3
-              </span>
-              <div>
-                <div className="text-sm font-semibold text-ink-primary">
-                  20% Final Sign-Off, IP Transfer & Handover
-                </div>
-                <div className="text-xs text-ink-secondary">
-                  Full IP assignment transfer, production deploy, warranty sign-off.
-                </div>
+          {/* Milestone 3 */}
+          <div className="p-4 rounded-xl bg-white border border-surface-border/80 shadow-subtle flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-[11px] font-mono mb-1">
+                <span className="font-semibold text-accent-emerald">Milestone 3 (20%)</span>
+                <span className="text-ink-muted">Final Sign-off</span>
               </div>
-            </div>
-            <div className="text-right">
-              <div className="text-base font-bold font-mono text-ink-primary">
+              <div className="text-lg font-bold font-mono text-ink-primary">
                 {formatCurrency(m3, currency)}
               </div>
-              <span className="text-[11px] font-mono text-accent-emerald">20% Sign-off</span>
             </div>
+            <p className="text-[11px] text-ink-secondary mt-2 leading-relaxed">
+              Released upon final client approval, documentation transfer, and QA sign-off.
+            </p>
           </div>
         </div>
       </div>

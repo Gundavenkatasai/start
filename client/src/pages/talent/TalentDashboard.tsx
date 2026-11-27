@@ -5,6 +5,7 @@ import { api } from '../../lib/api';
 import { TalentProfile, ProjectPodMember, AvailabilityStatus } from '../../types';
 import { BenchStatusBadge } from '../../components/shared/StatusBadge';
 import { formatCurrency, formatDate, getCategoryLabel } from '../../lib/formatters';
+import { Badge } from '../../components/ui/Badge';
 import {
   ShieldCheck,
   Clock,
@@ -17,6 +18,7 @@ import {
   Briefcase,
   DollarSign,
   Calendar,
+  Layers,
 } from 'lucide-react';
 
 export const TalentDashboard: React.FC = () => {
@@ -83,9 +85,9 @@ export const TalentDashboard: React.FC = () => {
   if (!profile) {
     return (
       <PortalLayout>
-        <div className="p-6 rounded-2xl bg-white border border-surface-border text-center">
-          <AlertCircle className="w-8 h-8 text-rose-500 mx-auto mb-2" />
-          <h2 className="text-lg font-bold">Talent Profile Not Found</h2>
+        <div className="p-8 bg-white rounded-3xl border border-surface-border text-center shadow-subtle">
+          <AlertCircle className="w-8 h-8 text-accent-rose mx-auto mb-2" />
+          <h2 className="text-lg font-bold font-sans">Talent Profile Not Found</h2>
         </div>
       </PortalLayout>
     );
@@ -97,26 +99,26 @@ export const TalentDashboard: React.FC = () => {
     <PortalLayout>
       <div className="space-y-6">
         {/* Welcome & Status Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-surface-border shadow-card">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-surface-border shadow-subtle">
           <div>
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-mono text-ink-muted">BENCH STATUS:</span>
               <BenchStatusBadge status={profile.status} />
             </div>
-            <h1 className="text-2xl font-bold text-ink-primary">
+            <h1 className="text-2xl sm:text-3xl font-bold text-ink-primary font-sans">
               Welcome back, {profile.user?.fullName}
             </h1>
-            <p className="text-xs text-ink-secondary mt-0.5">
+            <p className="text-xs sm:text-sm text-ink-secondary mt-1">
               Vertical: <strong>{getCategoryLabel(profile.primaryCategory)}</strong> • {profile.yearsExperience} yrs exp • {profile.user?.country}
             </p>
           </div>
 
           {/* Availability Ping Quick Toggle */}
-          <div className="bg-surface-subtle p-3.5 rounded-xl border border-surface-border self-start sm:self-center">
-            <div className="flex items-center justify-between gap-4 mb-2">
+          <div className="bg-surface-subtle/80 p-4 rounded-2xl border border-surface-border self-start lg:self-center space-y-2.5">
+            <div className="flex items-center justify-between gap-4">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-ink-muted flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-accent-cobalt" />
-                <span>BENCH CAPACITY</span>
+                <span>BENCH CAPACITY SLA</span>
               </span>
               <span className="text-[10px] font-mono text-ink-muted">
                 Confirmed: {formatDate(profile.lastAvailabilityConfirmedAt)}
@@ -127,10 +129,10 @@ export const TalentDashboard: React.FC = () => {
               <button
                 onClick={() => handleAvailabilityToggle('AVAILABLE_NOW')}
                 disabled={updatingAvailability}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium border transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium border transition-all ${
                   profile.availabilityStatus === 'AVAILABLE_NOW'
                     ? 'bg-accent-emerald text-white border-accent-emerald shadow-sm'
-                    : 'bg-white text-ink-secondary border-surface-border hover:border-accent-emerald'
+                    : 'bg-white text-ink-secondary border-surface-border hover:border-accent-emerald hover:text-accent-emerald'
                 }`}
               >
                 Available Now (72h)
@@ -138,10 +140,10 @@ export const TalentDashboard: React.FC = () => {
               <button
                 onClick={() => handleAvailabilityToggle('LIMITED')}
                 disabled={updatingAvailability}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium border transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium border transition-all ${
                   profile.availabilityStatus === 'LIMITED'
                     ? 'bg-accent-cobalt text-white border-accent-cobalt shadow-sm'
-                    : 'bg-white text-ink-secondary border-surface-border hover:border-accent-cobalt'
+                    : 'bg-white text-ink-secondary border-surface-border hover:border-accent-cobalt hover:text-accent-cobalt'
                 }`}
               >
                 In 2 Weeks
@@ -149,9 +151,9 @@ export const TalentDashboard: React.FC = () => {
               <button
                 onClick={() => handleAvailabilityToggle('UNAVAILABLE')}
                 disabled={updatingAvailability}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium border transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium border transition-all ${
                   profile.availabilityStatus === 'UNAVAILABLE'
-                    ? 'bg-slate-700 text-white border-slate-700 shadow-sm'
+                    ? 'bg-surface-secondary text-ink-primary border-slate-400 shadow-sm font-semibold'
                     : 'bg-white text-ink-secondary border-surface-border hover:border-slate-400'
                 }`}
               >
@@ -162,10 +164,14 @@ export const TalentDashboard: React.FC = () => {
         </div>
 
         {/* Bench Progress Stepper */}
-        <div className="bg-white p-6 rounded-2xl border border-surface-border shadow-card">
-          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-muted mb-4">
-            Talent Bench Pipeline Progression
-          </h3>
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-surface-border shadow-subtle space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-primary font-sans">
+              Talent Bench Pipeline Progression
+            </h3>
+            <span className="text-xs font-mono text-ink-muted">Warm Bench Protocol</span>
+          </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {steps.map((step, idx) => {
               const isPast = idx < currentIndex;
@@ -173,12 +179,12 @@ export const TalentDashboard: React.FC = () => {
               return (
                 <div
                   key={step}
-                  className={`p-3.5 rounded-xl border text-center transition-all ${
+                  className={`p-4 rounded-2xl border text-center transition-all ${
                     isCurrent
-                      ? 'bg-blue-50/70 border-accent-cobalt shadow-sm'
+                      ? 'bg-accent-cobalt-light/70 border-accent-cobalt shadow-subtle'
                       : isPast
-                      ? 'bg-emerald-50/40 border-emerald-200'
-                      : 'bg-surface-subtle border-surface-border opacity-60'
+                      ? 'bg-accent-emerald-light/40 border-accent-emerald-border'
+                      : 'bg-surface-subtle/80 border-surface-border opacity-60'
                   }`}
                 >
                   <div className="text-[10px] font-mono text-ink-muted mb-1">STAGE 0{idx + 1}</div>
@@ -199,7 +205,7 @@ export const TalentDashboard: React.FC = () => {
 
         {/* Pending Open-Book Pod Invitations Banner */}
         {pendingInvitations.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-accent-cobalt animate-ping" />
               <h3 className="text-sm font-bold text-ink-primary uppercase tracking-wider font-mono">
@@ -211,35 +217,35 @@ export const TalentDashboard: React.FC = () => {
               {pendingInvitations.map((inv) => (
                 <div
                   key={inv.id}
-                  className="bg-white p-6 rounded-2xl border-2 border-accent-cobalt shadow-elevated flex flex-col md:flex-row md:items-center justify-between gap-6"
+                  className="bg-white p-6 sm:p-8 rounded-3xl border border-accent-cobalt shadow-elevated flex flex-col md:flex-row md:items-center justify-between gap-6"
                 >
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs px-2.5 py-0.5 rounded-full font-mono font-bold bg-blue-50 text-accent-cobalt border border-blue-200">
+                      <Badge variant="primary" dot pulse>
                         OPEN-BOOK OFFER
-                      </span>
+                      </Badge>
                       <span className="text-xs font-mono text-ink-muted">
                         Client: {inv.project?.client?.companyName}
                       </span>
                     </div>
-                    <h4 className="text-lg font-bold text-ink-primary">{inv.project?.title}</h4>
-                    <p className="text-xs text-ink-secondary max-w-xl">
+                    <h4 className="text-xl font-bold text-ink-primary font-sans">{inv.project?.title}</h4>
+                    <p className="text-xs text-ink-secondary max-w-xl leading-relaxed">
                       Role: <strong className="text-ink-primary">{inv.roleTitle}</strong> ({inv.sharePercent}% of gross budget)
                     </p>
-                    <div className="flex flex-wrap items-center gap-4 text-xs font-mono pt-1">
-                      <div>
+                    <div className="flex flex-wrap items-center gap-4 text-xs font-mono pt-2">
+                      <div className="bg-surface-subtle px-3 py-1.5 rounded-xl border border-surface-border">
                         Total Client Budget:{' '}
                         <span className="font-bold text-ink-primary">
                           {formatCurrency(inv.project?.grossBudgetMinorUnits || 0, inv.project?.currency)}
                         </span>
                       </div>
-                      <div>
+                      <div className="bg-surface-subtle px-3 py-1.5 rounded-xl border border-surface-border">
                         Platform Margin:{' '}
                         <span className="font-bold text-ink-primary">
                           {inv.project?.platformFeePercent}%
                         </span>
                       </div>
-                      <div className="text-accent-emerald font-bold text-sm">
+                      <div className="text-accent-emerald font-bold text-sm bg-accent-emerald-light px-3 py-1.5 rounded-xl border border-accent-emerald-border">
                         Your Fixed Payout: {formatCurrency(inv.payoutMinorUnits, inv.project?.currency)}
                       </div>
                     </div>
@@ -247,7 +253,7 @@ export const TalentDashboard: React.FC = () => {
 
                   <Link
                     to={`/talent/invitations/${inv.id}`}
-                    className="px-6 py-3 rounded-xl bg-accent-cobalt text-white font-semibold text-xs hover:bg-accent-cobalt-hover shadow-md flex items-center justify-center gap-2 self-start md:self-center shrink-0"
+                    className="px-6 py-3 rounded-xl bg-accent-cobalt text-white font-semibold text-xs hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow flex items-center justify-center gap-2 self-start md:self-center shrink-0 transition-all"
                   >
                     <span>Inspect Transparency Sheet & E-Sign</span>
                     <ArrowRight className="w-4 h-4" />
@@ -259,48 +265,51 @@ export const TalentDashboard: React.FC = () => {
         )}
 
         {/* Active Projects Workspace Cards */}
-        <div className="bg-white p-6 rounded-2xl border border-surface-border shadow-card space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-ink-primary uppercase tracking-wider font-mono">
-              Your Active Project Pods
-            </h3>
-            <span className="text-xs font-mono text-ink-muted">{activeProjects.length} Active</span>
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-surface-border shadow-subtle space-y-4">
+          <div className="flex items-center justify-between border-b border-surface-border/80 pb-4">
+            <div>
+              <h3 className="text-base font-bold text-ink-primary font-sans">
+                Your Active Project Pods
+              </h3>
+              <p className="text-xs text-ink-secondary mt-0.5">Deliverable sprints with guaranteed founder escrow.</p>
+            </div>
+            <Badge variant="primary">{activeProjects.length} Active</Badge>
           </div>
 
           {activeProjects.length === 0 ? (
-            <div className="py-10 text-center text-xs text-ink-muted font-mono bg-surface-subtle rounded-xl border border-dashed border-surface-border">
-              No active project pods currently running. Ensure your availability status is set to "Available Now".
+            <div className="py-12 text-center text-xs text-ink-muted font-mono bg-surface-subtle/80 rounded-2xl border border-dashed border-surface-border">
+              No active project pods currently running. Ensure your availability status is set to "Available Now (72h)".
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {activeProjects.map((p) => (
                 <div
                   key={p.id}
-                  className="p-5 rounded-xl border border-surface-border hover:border-accent-cobalt transition-all space-y-3 bg-surface-subtle"
+                  className="p-5 sm:p-6 rounded-2xl border border-surface-border hover:border-slate-300 hover:shadow-subtle transition-all space-y-3 bg-surface-subtle/60"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono px-2 py-0.5 rounded bg-white border border-surface-border text-ink-secondary">
+                    <Badge variant="secondary" size="sm">
                       {p.roleTitle}
-                    </span>
+                    </Badge>
                     <span className="text-xs font-bold font-mono text-accent-emerald">
                       {formatCurrency(p.payoutMinorUnits, p.project?.currency)}
                     </span>
                   </div>
 
                   <div>
-                    <h4 className="text-base font-bold text-ink-primary">{p.project?.title}</h4>
-                    <p className="text-xs text-ink-secondary mt-1 line-clamp-2">
+                    <h4 className="text-base font-bold text-ink-primary font-sans">{p.project?.title}</h4>
+                    <p className="text-xs text-ink-secondary mt-1 line-clamp-2 leading-relaxed">
                       {p.project?.scopeSummary}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-surface-border flex items-center justify-between">
+                  <div className="pt-3 border-t border-surface-border/80 flex items-center justify-between">
                     <span className="text-[11px] font-mono text-ink-muted">
                       Milestones: {p.project?.milestones?.length || 3}
                     </span>
                     <Link
                       to={`/talent/projects/${p.projectId}`}
-                      className="text-xs font-semibold text-accent-cobalt hover:underline inline-flex items-center gap-1 font-mono"
+                      className="text-xs font-semibold text-accent-cobalt hover:underline inline-flex items-center gap-1 font-mono transition-colors"
                     >
                       <span>Open Workspace</span>
                       <ArrowRight className="w-3.5 h-3.5" />

@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { PortalLayout } from '../../components/layout/PortalLayout';
 import { api } from '../../lib/api';
 import { formatCurrency, getCategoryLabel } from '../../lib/formatters';
+import { Badge } from '../../components/ui/Badge';
 import {
   Users,
   ArrowLeft,
@@ -14,6 +15,7 @@ import {
   Trash2,
   Send,
   Scale,
+  Sparkles,
 } from 'lucide-react';
 
 export const AdminPodAssembler: React.FC = () => {
@@ -155,81 +157,84 @@ export const AdminPodAssembler: React.FC = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         <Link
           to="/admin/projects"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-ink-muted hover:text-ink-primary"
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-ink-muted hover:text-ink-primary transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Projects Pipeline</span>
         </Link>
 
-        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-surface-border shadow-card space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border pb-6">
+        <div className="bg-white p-6 sm:p-8 md:p-10 rounded-3xl border border-surface-border shadow-smooth space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border/80 pb-6">
             <div>
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-accent-cobalt">
-                OPEN-BOOK POD ASSEMBLER
-              </span>
-              <h1 className="text-2xl font-bold text-ink-primary mt-1">
+              <div className="flex items-center gap-2 mb-2">
+                <Badge variant="primary" dot pulse>
+                  OPEN-BOOK POD ASSEMBLER
+                </Badge>
+                <span className="text-xs font-mono text-ink-muted">Transparent 70/30 Split</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-ink-primary font-sans">
                 Assemble Pod: {project?.title}
               </h1>
-              <p className="text-xs text-ink-secondary mt-0.5">
+              <p className="text-xs sm:text-sm text-ink-secondary mt-1">
                 Gross Budget: <strong className="font-mono text-ink-primary">{formatCurrency(project?.grossBudgetMinorUnits, project?.currency)}</strong> • Client: {project?.client?.companyName}
               </p>
             </div>
 
             {/* Live 100% Validator Pill */}
             <div
-              className={`p-4 rounded-xl border text-right font-mono self-start sm:self-center ${
+              className={`p-4 rounded-2xl border text-right font-mono self-start sm:self-center transition-all ${
                 isBalanced
-                  ? 'bg-emerald-50 border-emerald-300 text-emerald-950'
-                  : 'bg-rose-50 border-rose-300 text-rose-950'
+                  ? 'bg-accent-emerald-light border-accent-emerald-border text-emerald-950 shadow-subtle'
+                  : 'bg-accent-rose-light border-accent-rose-border text-rose-950 shadow-subtle'
               }`}
             >
               <span className="text-[10px] font-bold uppercase block tracking-wider">
                 100% SPLIT VALIDATOR
               </span>
-              <div className="text-xl font-extrabold mt-0.5">
+              <div className="text-xl sm:text-2xl font-extrabold mt-0.5">
                 {totalAllocatedPercent}% / 100.0%
               </div>
-              <span className="text-[10px]">
-                {isBalanced ? '✓ Perfectly Balanced' : '⚠️ Must sum to exactly 100%'}
+              <span className="text-[10px] block mt-0.5 font-medium">
+                {isBalanced ? '✓ Zero Cent Drift Balanced' : '⚠️ Must sum to exactly 100%'}
               </span>
             </div>
           </div>
 
           {/* Allocation Breakdown Strip */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 bg-surface-subtle rounded-xl border border-surface-border">
+            <div className="p-4 sm:p-5 bg-surface-subtle/80 rounded-2xl border border-surface-border">
               <span className="text-[10px] font-mono text-ink-muted uppercase block font-bold">
                 Platform Margin (Fixed by Scoping)
               </span>
-              <div className="text-lg font-bold font-mono text-slate-800 mt-1">
+              <div className="text-xl font-bold font-mono text-ink-primary mt-1">
                 {platformFee}% = {formatCurrency(Math.floor((project?.grossBudgetMinorUnits * platformFee) / 100), project?.currency)}
               </div>
-              <span className="text-[11px] text-ink-muted">12% Ops, 10% Founder PM, 8% Reserve</span>
+              <span className="text-[11px] text-ink-muted mt-0.5 block">12% Ops, 10% Founder PM, 8% Reserve</span>
             </div>
 
-            <div className="p-4 bg-emerald-50/70 rounded-xl border border-emerald-200">
+            <div className="p-4 sm:p-5 bg-accent-emerald-light/60 rounded-2xl border border-accent-emerald-border">
               <span className="text-[10px] font-mono text-emerald-800 uppercase block font-bold">
                 Execution Pod Pool
               </span>
-              <div className="text-lg font-bold font-mono text-emerald-950 mt-1">
+              <div className="text-xl font-bold font-mono text-emerald-950 mt-1">
                 {talentTotalShare}% = {formatCurrency(Math.floor((project?.grossBudgetMinorUnits * talentTotalShare) / 100), project?.currency)}
               </div>
-              <span className="text-[11px] text-emerald-700">Distributed across specialists below</span>
+              <span className="text-[11px] text-emerald-700 mt-0.5 block">Distributed across specialists below</span>
             </div>
           </div>
 
           <form onSubmit={handleSendPodInvitations} className="space-y-6 text-xs">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-surface-border/80 pb-3">
                 <h3 className="font-bold text-ink-primary uppercase tracking-wider font-mono">
                   Select Bench Specialists (1–4 Pod Members)
                 </h3>
                 <button
                   type="button"
                   onClick={handleAddMember}
-                  className="px-3 py-1.5 rounded-lg bg-surface-secondary text-ink-primary hover:bg-surface-border text-xs font-semibold flex items-center gap-1 border border-surface-border"
+                  className="px-3.5 py-1.5 rounded-xl bg-surface-subtle hover:bg-surface-secondary text-ink-primary text-xs font-semibold flex items-center gap-1.5 border border-surface-border transition-all shadow-subtle"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-3.5 h-3.5 text-accent-cobalt" />
                   <span>Add Specialist</span>
                 </button>
               </div>
@@ -243,12 +248,12 @@ export const AdminPodAssembler: React.FC = () => {
                   return (
                     <div
                       key={idx}
-                      className="p-4 rounded-xl border border-surface-border bg-surface-subtle space-y-3"
+                      className="p-4 sm:p-5 rounded-2xl border border-surface-border bg-surface-subtle/80 space-y-3.5"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-2">
-                          <span className="w-6 h-6 rounded-full bg-accent-cobalt text-white font-mono text-xs font-bold flex items-center justify-center">
-                            {idx + 1}
+                          <span className="w-6 h-6 rounded-xl bg-accent-cobalt-light text-accent-cobalt border border-accent-cobalt-border font-mono text-xs font-bold flex items-center justify-center">
+                            0{idx + 1}
                           </span>
                           <span className="font-bold font-mono text-ink-primary">
                             Specialist Slot 0{idx + 1}
@@ -258,15 +263,16 @@ export const AdminPodAssembler: React.FC = () => {
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-1 font-mono text-accent-emerald font-bold">
                             <span>Payout:</span>
-                            <span>{formatCurrency(calculatedPayout, project?.currency)}</span>
+                            <span className="text-sm">{formatCurrency(calculatedPayout, project?.currency)}</span>
                           </div>
                           {podMembers.length > 1 && (
                             <button
                               type="button"
                               onClick={() => handleRemoveMember(idx)}
-                              className="text-ink-muted hover:text-rose-600 p-1"
+                              className="p-1 rounded-xl text-ink-muted hover:text-accent-rose hover:bg-accent-rose-light/40 transition-colors"
+                              title="Remove specialist"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           )}
                         </div>
@@ -275,11 +281,11 @@ export const AdminPodAssembler: React.FC = () => {
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {/* Select Specialist */}
                         <div>
-                          <label className="block text-[11px] text-ink-muted mb-0.5">Select Bench Talent *</label>
+                          <label className="block text-[11px] font-semibold text-ink-primary mb-1">Select Bench Talent *</label>
                           <select
                             value={member.talentId}
                             onChange={(e) => handleMemberChange(idx, 'talentId', e.target.value)}
-                            className="w-full px-3 py-1.5 rounded-lg border border-surface-border bg-white focus:border-accent-cobalt outline-none font-mono"
+                            className="w-full px-3 py-2 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none font-mono transition-all shadow-subtle"
                           >
                             {benchTalent.map((t) => (
                               <option key={t.id} value={t.id}>
@@ -291,20 +297,20 @@ export const AdminPodAssembler: React.FC = () => {
 
                         {/* Role Title */}
                         <div>
-                          <label className="block text-[11px] text-ink-muted mb-0.5">Role Title on Project *</label>
+                          <label className="block text-[11px] font-semibold text-ink-primary mb-1">Role Title on Project *</label>
                           <input
                             type="text"
                             required
                             value={member.roleTitle}
                             onChange={(e) => handleMemberChange(idx, 'roleTitle', e.target.value)}
                             placeholder="e.g. Lead Full-Stack Engineer"
-                            className="w-full px-3 py-1.5 rounded-lg border border-surface-border bg-white focus:border-accent-cobalt outline-none"
+                            className="w-full px-3 py-2 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none transition-all shadow-subtle"
                           />
                         </div>
 
                         {/* Share % */}
                         <div>
-                          <label className="block text-[11px] text-ink-muted mb-0.5">Gross Share % *</label>
+                          <label className="block text-[11px] font-semibold text-ink-primary mb-1">Gross Share % *</label>
                           <input
                             type="number"
                             step="0.5"
@@ -313,7 +319,7 @@ export const AdminPodAssembler: React.FC = () => {
                             onChange={(e) =>
                               handleMemberChange(idx, 'sharePercent', Number(e.target.value))
                             }
-                            className="w-full px-3 py-1.5 rounded-lg border border-surface-border bg-white focus:border-accent-cobalt outline-none font-mono"
+                            className="w-full px-3 py-2 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none font-mono transition-all shadow-subtle"
                           />
                         </div>
                       </div>
@@ -324,7 +330,7 @@ export const AdminPodAssembler: React.FC = () => {
             </div>
 
             {/* Submit Action */}
-            <div className="pt-4 border-t border-surface-border flex items-center justify-between">
+            <div className="pt-3 border-t border-surface-border/80 flex items-center justify-between">
               <span className="text-xs font-mono text-ink-muted">
                 Dispatches SOW offers with full open-book transparency sheets.
               </span>
@@ -332,7 +338,7 @@ export const AdminPodAssembler: React.FC = () => {
               <button
                 type="submit"
                 disabled={saving || !isBalanced}
-                className="px-6 py-2.5 rounded-xl bg-accent-cobalt text-white font-semibold text-xs hover:bg-accent-cobalt-hover shadow-sm disabled:opacity-50 flex items-center gap-1.5"
+                className="px-6 py-3 rounded-xl bg-accent-cobalt text-white font-semibold text-xs sm:text-sm hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow disabled:opacity-50 flex items-center gap-2 transition-all"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>{saving ? 'Dispatching...' : 'Send Open-Book Pod Invitations'}</span>

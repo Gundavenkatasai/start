@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { PortalLayout } from '../../components/layout/PortalLayout';
 import { api } from '../../lib/api';
 import { formatCurrency, formatDate } from '../../lib/formatters';
+import { Badge } from '../../components/ui/Badge';
 import {
   ShieldCheck,
   CheckCircle2,
@@ -15,6 +16,7 @@ import {
   Users,
   Calendar,
   Lock,
+  Sparkles,
 } from 'lucide-react';
 
 export const TalentInvitationDetail: React.FC = () => {
@@ -103,12 +105,12 @@ export const TalentInvitationDetail: React.FC = () => {
   if (error || !data) {
     return (
       <PortalLayout>
-        <div className="p-8 rounded-2xl bg-white border border-surface-border text-center space-y-4">
-          <AlertCircle className="w-8 h-8 text-rose-500 mx-auto" />
-          <h2 className="text-xl font-bold">{error || 'Invitation Not Found'}</h2>
+        <div className="p-8 sm:p-12 rounded-3xl bg-white border border-surface-border text-center space-y-4 shadow-subtle">
+          <AlertCircle className="w-8 h-8 text-accent-rose mx-auto" />
+          <h2 className="text-xl font-bold font-sans">{error || 'Invitation Not Found'}</h2>
           <Link
             to="/talent/dashboard"
-            className="inline-flex items-center gap-1.5 text-xs font-mono text-accent-cobalt"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-accent-cobalt hover:underline"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Return to Dashboard</span>
@@ -128,40 +130,40 @@ export const TalentInvitationDetail: React.FC = () => {
         {/* Back Link */}
         <Link
           to="/talent/dashboard"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-ink-secondary hover:text-ink-primary"
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-ink-secondary hover:text-ink-primary transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Dashboard</span>
         </Link>
 
         {/* Hero Transparency Card */}
-        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-surface-border shadow-card space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border pb-6">
+        <div className="bg-white p-6 sm:p-8 md:p-10 rounded-3xl border border-surface-border shadow-smooth space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border/80 pb-6">
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-50 text-accent-cobalt border border-blue-200">
+              <div className="flex items-center gap-2 mb-2">
+                <Badge variant="primary" dot pulse>
                   OPEN-BOOK SOW OFFER
-                </span>
+                </Badge>
                 <span className="text-xs font-mono text-ink-muted">
                   Client: {project.client?.companyName} ({project.client?.billingCountry})
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-ink-primary">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-ink-primary font-sans">
                 {project.title}
               </h1>
-              <p className="text-xs sm:text-sm text-ink-secondary mt-1 max-w-2xl leading-relaxed">
+              <p className="text-xs sm:text-sm text-ink-secondary mt-1.5 max-w-2xl leading-relaxed">
                 {project.scopeSummary}
               </p>
             </div>
 
-            <div className="text-left sm:text-right bg-emerald-50/70 p-4 rounded-xl border border-emerald-200 shrink-0">
+            <div className="text-left sm:text-right bg-accent-emerald-light/70 p-5 rounded-2xl border border-accent-emerald-border shrink-0">
               <span className="text-[10px] font-mono font-bold uppercase text-emerald-800 block">
                 YOUR GUARANTEED FIXED PAYOUT
               </span>
-              <div className="text-2xl font-extrabold font-mono text-emerald-950 mt-0.5">
+              <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-950 mt-1">
                 {formatCurrency(membership.payoutMinorUnits, project.currency)}
               </div>
-              <span className="text-[11px] font-mono text-emerald-700">
+              <span className="text-[11px] font-mono text-emerald-700 block mt-0.5">
                 {membership.sharePercent}% of gross client budget
               </span>
             </div>
@@ -169,65 +171,65 @@ export const TalentInvitationDetail: React.FC = () => {
 
           {/* Gross Budget & Platform Margin Transparency Sheet */}
           <div>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-muted mb-3 flex items-center gap-2">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-primary mb-3 flex items-center gap-2 font-sans">
               <Scale className="w-4 h-4 text-accent-cobalt" />
               <span>Full Project Budget Transparency Sheet</span>
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div className="p-4 rounded-xl bg-surface-subtle border border-surface-border">
-                <div className="text-xs text-ink-secondary">Gross Client Contract</div>
-                <div className="text-xl font-bold font-mono text-ink-primary mt-1">
+              <div className="p-4 sm:p-5 rounded-2xl bg-surface-subtle/80 border border-surface-border">
+                <div className="text-xs text-ink-secondary font-medium">Gross Client Contract</div>
+                <div className="text-xl sm:text-2xl font-bold font-mono text-ink-primary mt-1">
                   {formatCurrency(transparencySheet.grossBudgetMinorUnits, project.currency)}
                 </div>
-                <div className="text-[11px] text-ink-muted mt-1">100% of client invoice</div>
+                <div className="text-[11px] text-ink-muted mt-1 font-mono">100% of client invoice</div>
               </div>
 
-              <div className="p-4 rounded-xl bg-surface-subtle border border-surface-border">
-                <div className="text-xs text-ink-secondary">
+              <div className="p-4 sm:p-5 rounded-2xl bg-surface-subtle/80 border border-surface-border">
+                <div className="text-xs text-ink-secondary font-medium">
                   Platform & Ops Fee ({transparencySheet.platformMarginPercent}%)
                 </div>
-                <div className="text-xl font-bold font-mono text-slate-800 mt-1">
+                <div className="text-xl sm:text-2xl font-bold font-mono text-ink-primary mt-1">
                   {formatCurrency(transparencySheet.platformBreakdown.totalPlatformMinorUnits, project.currency)}
                 </div>
-                <div className="text-[11px] text-ink-muted mt-1">Sales, founder PM & QA reserve</div>
+                <div className="text-[11px] text-ink-muted mt-1 font-mono">Sales, founder PM & QA reserve</div>
               </div>
 
-              <div className="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200">
-                <div className="text-xs text-emerald-800">
+              <div className="p-4 sm:p-5 rounded-2xl bg-accent-emerald-light/60 border border-accent-emerald-border">
+                <div className="text-xs text-emerald-900 font-medium">
                   Total Execution Pod Pool ({transparencySheet.podTotalSharePercent}%)
                 </div>
-                <div className="text-xl font-bold font-mono text-emerald-950 mt-1">
+                <div className="text-xl sm:text-2xl font-bold font-mono text-emerald-950 mt-1">
                   {formatCurrency(
                     transparencySheet.grossBudgetMinorUnits - transparencySheet.platformBreakdown.totalPlatformMinorUnits,
                     project.currency
                   )}
                 </div>
-                <div className="text-[11px] text-emerald-700 mt-1">Directly allocated to specialists</div>
+                <div className="text-[11px] text-emerald-800 mt-1 font-mono">Directly allocated to specialists</div>
               </div>
             </div>
 
             {/* Platform Itemized Sub-split */}
-            <div className="p-4 rounded-xl bg-surface-subtle border border-surface-border text-xs">
-              <div className="text-ink-secondary font-mono font-semibold mb-2">
+            <div className="p-4 sm:p-5 rounded-2xl bg-surface-subtle/70 border border-surface-border text-xs">
+              <div className="text-ink-primary font-mono font-bold mb-2.5">
                 Itemized 30% Platform Breakdown:
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <span className="text-ink-muted">Sales & Client Ops (12%):</span>{' '}
-                  <strong className="font-mono text-ink-primary">
+                <div className="bg-white p-3 rounded-xl border border-surface-border/80">
+                  <span className="text-ink-muted block text-[11px]">Sales & Client Ops (12%):</span>
+                  <strong className="font-mono text-ink-primary text-sm mt-0.5 block">
                     {formatCurrency(transparencySheet.platformBreakdown.salesAndOpsMinorUnits, project.currency)}
                   </strong>
                 </div>
-                <div>
-                  <span className="text-ink-muted">Founder PM & QA (10%):</span>{' '}
-                  <strong className="font-mono text-ink-primary">
+                <div className="bg-white p-3 rounded-xl border border-surface-border/80">
+                  <span className="text-ink-muted block text-[11px]">Founder PM & QA (10%):</span>
+                  <strong className="font-mono text-accent-cobalt text-sm mt-0.5 block">
                     {formatCurrency(transparencySheet.platformBreakdown.pmAndQaMinorUnits, project.currency)}
                   </strong>
                 </div>
-                <div>
-                  <span className="text-ink-muted">Warranty Reserve (8%):</span>{' '}
-                  <strong className="font-mono text-ink-primary">
+                <div className="bg-white p-3 rounded-xl border border-surface-border/80">
+                  <span className="text-ink-muted block text-[11px]">Warranty Reserve (8%):</span>
+                  <strong className="font-mono text-emerald-700 text-sm mt-0.5 block">
                     {formatCurrency(transparencySheet.platformBreakdown.reserveMarginMinorUnits, project.currency)}
                   </strong>
                 </div>
@@ -237,7 +239,7 @@ export const TalentInvitationDetail: React.FC = () => {
 
           {/* Pod Roles & Effort Weights */}
           <div className="pt-2">
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-muted mb-3 flex items-center gap-2">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-primary mb-3 flex items-center gap-2 font-sans">
               <Users className="w-4 h-4 text-accent-cobalt" />
               <span>Pod Roles & Assigned Weights</span>
             </h3>
@@ -248,26 +250,26 @@ export const TalentInvitationDetail: React.FC = () => {
                 return (
                   <div
                     key={role.talentId}
-                    className={`flex items-center justify-between p-3.5 rounded-xl border text-xs font-mono ${
+                    className={`flex items-center justify-between p-4 rounded-2xl border text-xs font-mono transition-all ${
                       isYou
-                        ? 'bg-blue-50/70 border-accent-cobalt text-accent-cobalt font-bold'
+                        ? 'bg-accent-cobalt-light/70 border-accent-cobalt text-accent-cobalt font-bold shadow-subtle'
                         : 'bg-white border-surface-border text-ink-secondary'
                     }`}
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-current" />
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-2 h-2 rounded-full bg-current shrink-0" />
                       <span>{role.roleTitle}</span>
                       {isYou && (
-                        <span className="px-1.5 py-0.2 rounded bg-accent-cobalt text-white text-[10px]">
+                        <Badge variant="primary" size="sm">
                           YOU
-                        </span>
+                        </Badge>
                       )}
                     </div>
                     <div className="flex items-center gap-4">
-                      <span>{role.sharePercent}% gross share</span>
-                      <strong className="text-ink-primary text-sm">
+                      <span>{role.sharePercent}% Share</span>
+                      <span className="font-bold">
                         {formatCurrency(role.payoutMinorUnits, project.currency)}
-                      </strong>
+                      </span>
                     </div>
                   </div>
                 );
@@ -275,100 +277,52 @@ export const TalentInvitationDetail: React.FC = () => {
             </div>
           </div>
 
-          {/* 50/30/20 Milestone Payout Schedule */}
-          <div className="pt-2">
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-muted mb-3 flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-accent-cobalt" />
-              <span>50% / 30% / 20% Milestone Schedule & Revision Cap</span>
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {transparencySheet.milestonesSchedule.map((m: any) => (
-                <div key={m.sequenceOrder} className="p-3.5 bg-surface-subtle rounded-xl border border-surface-border">
-                  <div className="text-[10px] font-mono text-ink-muted font-bold">
-                    MILESTONE 0{m.sequenceOrder} ({m.percentOfBudget}%)
-                  </div>
-                  <div className="text-xs font-bold text-ink-primary mt-0.5">{m.title}</div>
-                  <div className="text-base font-bold font-mono text-accent-cobalt mt-1.5">
-                    {formatCurrency(
-                      Math.floor((membership.payoutMinorUnits * m.percentOfBudget) / 100),
-                      project.currency
-                    )}
-                  </div>
-                  <div className="text-[10px] text-ink-muted mt-0.5">Your Milestone Slice</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-3 p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-xs text-amber-900 flex items-center justify-between">
-              <span>
-                <strong>Revision Cap Policy:</strong> Strictly 2 revision rounds per milestone. Extra client requests trigger a funded Change Order.
-              </span>
-              <span className="font-mono text-amber-800 font-bold">Cap: 2 Rounds</span>
-            </div>
-          </div>
-
-          {/* Legal IP Assignment & Non-Circumvention Summary */}
-          <div className="p-4 bg-surface-subtle rounded-xl border border-surface-border text-xs text-ink-secondary space-y-1">
-            <div className="font-bold text-ink-primary">IP Assignment & Non-Circumvention Summary:</div>
-            <p className="leading-relaxed">{transparencySheet.ipAssignmentTerms}</p>
-          </div>
-
-          {/* Electronic Signature or Status */}
-          <div className="pt-4 border-t border-surface-border">
+          {/* E-Signature & Agreement Form */}
+          <div className="pt-4 border-t border-surface-border/80">
             {isAccepted ? (
-              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-center justify-between">
+              <div className="p-4 sm:p-5 rounded-2xl bg-accent-emerald-light border border-accent-emerald-border flex items-center gap-3 text-emerald-950 text-xs">
+                <CheckCircle2 className="w-5 h-5 text-accent-emerald shrink-0" />
                 <div>
-                  <div className="font-bold flex items-center gap-1.5 text-accent-emerald text-sm">
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Scope of Work E-Signed & Accepted</span>
-                  </div>
-                  <div className="text-ink-secondary mt-0.5 font-mono">
-                    Signatory: {membership.signedName} • {formatDate(membership.signedAt)} • IP: {membership.signedIp}
+                  <div className="font-bold text-sm font-sans">Scope of Work E-Signed & Accepted</div>
+                  <div className="text-[11px] font-mono mt-0.5">
+                    Signed by: <strong>{membership.signedName}</strong> on {formatDate(membership.acceptedAt)}
                   </div>
                 </div>
-                <Link
-                  to={`/talent/projects/${project.id}`}
-                  className="px-4 py-2 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover"
-                >
-                  Go to Project Workspace
-                </Link>
               </div>
             ) : isDeclined ? (
-              <div className="p-4 bg-gray-100 border border-gray-300 rounded-xl text-xs text-gray-700">
-                <strong>You declined this project offer.</strong> Reason: "{membership.declineReason}"
+              <div className="p-4 sm:p-5 rounded-2xl bg-surface-secondary border border-surface-border text-ink-secondary text-xs">
+                You declined this invitation offer.
               </div>
             ) : (
               <form onSubmit={handleAcceptAndSign} className="space-y-4">
-                <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-200 space-y-3">
-                  <div className="flex items-center gap-2 text-xs font-bold text-accent-cobalt uppercase font-mono">
-                    <FileText className="w-4 h-4" />
-                    <span>Binding Electronic Signature</span>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-ink-primary mb-1">
-                      Type your full legal name to e-sign the Master Scope of Work *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={signedName}
-                      onChange={(e) => setSignedName(e.target.value)}
-                      placeholder="e.g. Marcus Vance"
-                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none font-mono"
-                    />
-                  </div>
-                  <p className="text-[11px] text-ink-muted">
-                    By clicking "Accept & E-Sign SOW", you agree to join this project pod and commit your agreed capacity.
-                    Your IP address and timestamp will be cryptographically logged.
-                  </p>
+                <div className="p-4 rounded-2xl bg-surface-subtle/80 border border-surface-border text-xs text-ink-secondary space-y-2 leading-relaxed">
+                  <div className="font-bold text-ink-primary font-sans">Master Contractor Terms Confirmation:</div>
+                  <ul className="list-disc pl-5 space-y-1 text-[11px]">
+                    <li>Guaranteed milestone escrow disbursement upon founder QA + client sign-off.</li>
+                    <li>Strict 2-round revision cap per milestone protect against scope creep.</li>
+                    <li>12-month mutual non-circumvention binding both client and contractor.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-ink-primary mb-1.5 font-sans">
+                    Type Full Legal Name to Electronically Sign SOW *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={signedName}
+                    onChange={(e) => setSignedName(e.target.value)}
+                    placeholder="e.g. Marcus Vance"
+                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-surface-border bg-white focus:border-accent-cobalt focus:ring-2 focus:ring-accent-cobalt/15 outline-none font-mono transition-all shadow-subtle"
+                  />
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
                   <button
                     type="button"
                     onClick={() => setShowDeclineModal(true)}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition-colors"
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-surface-border text-xs text-ink-secondary hover:text-accent-rose hover:border-rose-300 font-medium transition-colors"
                   >
                     Decline Offer
                   </button>
@@ -376,9 +330,9 @@ export const TalentInvitationDetail: React.FC = () => {
                   <button
                     type="submit"
                     disabled={eSigning}
-                    className="w-full sm:w-auto px-8 py-3 rounded-xl bg-accent-cobalt text-white font-semibold text-sm hover:bg-accent-cobalt-hover shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-accent-cobalt text-white font-semibold text-xs sm:text-sm hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                   >
-                    {eSigning ? 'Recording Signature...' : 'Accept & E-Sign SOW'}
+                    {eSigning ? 'Signing Contract...' : 'E-Sign & Accept Pod Position'}
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -387,23 +341,23 @@ export const TalentInvitationDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Decline Reason Modal */}
+        {/* Decline Modal */}
         {showDeclineModal && (
-          <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-white rounded-2xl p-6 border border-surface-border shadow-elevated space-y-4">
-              <h3 className="text-lg font-bold text-ink-primary">Decline Project Offer</h3>
-              <p className="text-xs text-ink-secondary">
-                Please provide a brief reason so our founder ops team can reallocate the pod slot:
+          <div className="fixed inset-0 z-50 bg-slate-900/30 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 border border-surface-border shadow-smooth space-y-4">
+              <h3 className="text-base font-bold text-ink-primary font-sans">Decline Project Pod Offer</h3>
+              <p className="text-xs text-ink-secondary leading-relaxed">
+                Please provide a brief reason so founder ops can adjust future matching criteria:
               </p>
               <textarea
-                required
                 rows={3}
+                required
                 value={declineReason}
                 onChange={(e) => setDeclineReason(e.target.value)}
-                placeholder="e.g. Current workload exceeded, timing conflict, or domain mismatch..."
-                className="w-full px-3 py-2 text-xs rounded-xl border border-surface-border focus:border-accent-cobalt outline-none"
+                placeholder="e.g. Schedule conflict, looking for longer commitment, etc."
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none transition-all shadow-subtle"
               />
-              <div className="flex items-center justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowDeclineModal(false)}
@@ -413,9 +367,9 @@ export const TalentInvitationDetail: React.FC = () => {
                 </button>
                 <button
                   type="button"
+                  disabled={declining}
                   onClick={handleDecline}
-                  disabled={declining || !declineReason.trim()}
-                  className="px-4 py-2 text-xs font-semibold rounded-xl bg-rose-600 text-white hover:bg-rose-700 disabled:opacity-50"
+                  className="px-4 py-2 rounded-xl bg-accent-rose text-white text-xs font-semibold hover:bg-accent-rose-hover shadow-sm disabled:opacity-50"
                 >
                   {declining ? 'Declining...' : 'Confirm Decline'}
                 </button>

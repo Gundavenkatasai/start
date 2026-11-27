@@ -19,7 +19,10 @@ import {
   X,
   PlusCircle,
   ExternalLink,
+  ShieldCheck,
+  MessageSquare,
 } from 'lucide-react';
+import { Badge } from '../ui/Badge';
 
 export const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, role, logout, switchDemoUser } = useAuth();
@@ -57,11 +60,11 @@ export const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   return (
-    <div className="min-h-screen bg-surface-subtle flex">
+    <div className="min-h-screen bg-[#FAFAFA] flex">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-sm lg:hidden transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -69,18 +72,18 @@ export const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children
       {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-surface-border flex flex-col justify-between transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-0 -translate-x-full lg:translate-x-0'
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
-        <div>
+        <div className="flex flex-col flex-1 overflow-y-auto">
           {/* Logo Header */}
-          <div className="h-16 px-6 flex items-center justify-between border-b border-surface-border">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-accent-cobalt flex items-center justify-center text-white font-mono font-bold text-sm">
+          <div className="h-16 px-6 flex items-center justify-between border-b border-surface-border/80">
+            <Link to="/" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-accent-cobalt flex items-center justify-center text-white font-mono font-bold text-sm shadow-sm">
                 OB
               </div>
               <div>
-                <span className="font-extrabold text-base tracking-tight text-ink-primary font-sans">
+                <span className="font-bold text-base tracking-tight text-ink-primary font-sans">
                   Open<span className="text-accent-cobalt">Bench</span>
                 </span>
                 <span className="block text-[9px] font-mono tracking-wider text-ink-muted uppercase">
@@ -90,7 +93,7 @@ export const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-1 rounded-lg text-ink-muted hover:text-ink-primary"
+              className="lg:hidden p-1.5 rounded-xl text-ink-muted hover:text-ink-primary hover:bg-surface-secondary"
             >
               <X className="w-5 h-5" />
             </button>
@@ -98,18 +101,21 @@ export const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children
 
           {/* Navigation Links */}
           <nav className="p-4 space-y-1">
+            <div className="px-3 py-1.5 text-[10px] font-mono font-semibold uppercase tracking-wider text-ink-muted">
+              Workspace Navigation
+            </div>
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`);
+              const isActive = location.pathname === item.path;
               return (
                 <Link
                   key={item.path}
                   to={item.path}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
                     isActive
-                      ? 'bg-blue-50 text-accent-cobalt border border-blue-200 shadow-sm'
-                      : 'text-ink-secondary hover:text-ink-primary hover:bg-surface-secondary'
+                      ? 'bg-accent-cobalt-light text-accent-cobalt border border-accent-cobalt-border/60 shadow-subtle'
+                      : 'text-ink-secondary hover:text-ink-primary hover:bg-surface-subtle'
                   }`}
                 >
                   <Icon className={`w-4 h-4 ${isActive ? 'text-accent-cobalt' : 'text-ink-muted'}`} />
@@ -118,37 +124,46 @@ export const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children
               );
             })}
           </nav>
+
+          {/* Founder Lead Ops Card */}
+          <div className="mx-4 mt-auto mb-4 p-4 rounded-2xl bg-surface-subtle/80 border border-surface-border">
+            <div className="flex items-center gap-2 mb-2">
+              <ShieldCheck className="w-4 h-4 text-accent-cobalt" />
+              <span className="text-xs font-bold text-ink-primary font-sans">Founder Ops Desk</span>
+            </div>
+            <p className="text-[11px] text-ink-secondary leading-relaxed mb-3">
+              Direct access to Alex & Dev for project scoping, QA reviews, and milestone disbursements.
+            </p>
+            <div className="flex items-center justify-between text-[10px] font-mono">
+              <span className="text-accent-emerald font-semibold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent-emerald animate-pulse" />
+                72h Kickoff SLA
+              </span>
+              <span className="text-ink-muted">ops@openbench.io</span>
+            </div>
+          </div>
         </div>
 
-        {/* Founder Ops Contact Card & User Widget */}
-        <div className="p-4 border-t border-surface-border space-y-3">
-          {/* 2-Person Founder Lead Card */}
-          <div className="p-3 bg-surface-secondary/70 rounded-xl border border-surface-border">
-            <div className="text-[10px] font-mono font-semibold uppercase tracking-wider text-ink-muted flex items-center justify-between">
-              <span>FOUNDER OPS TEAM</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            </div>
-            <div className="mt-1 text-xs font-semibold text-ink-primary">
-              Alex Morgan & Priya Sharma
-            </div>
-            <div className="text-[11px] text-ink-secondary">Direct PM, Scoping & QA Gate</div>
-          </div>
-
-          {/* User Profile Info */}
-          <div className="flex items-center justify-between pt-1">
+        {/* User Profile & Logout Bottom Bar */}
+        <div className="p-4 border-t border-surface-border/80 bg-surface-subtle/40">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="w-8 h-8 rounded-full bg-slate-900 text-white font-mono text-xs font-bold flex items-center justify-center shrink-0">
-                {user?.fullName.charAt(0)}
+              <div className="w-8 h-8 rounded-full bg-accent-cobalt-light text-accent-cobalt border border-accent-cobalt-border flex items-center justify-center font-bold text-xs shrink-0">
+                {user?.fullName?.charAt(0) || 'U'}
               </div>
               <div className="overflow-hidden">
-                <div className="text-xs font-bold text-ink-primary truncate">{user?.fullName}</div>
-                <div className="text-[10px] text-ink-muted truncate font-mono">{user?.email}</div>
+                <div className="text-xs font-semibold text-ink-primary truncate font-sans">
+                  {user?.fullName || 'User'}
+                </div>
+                <div className="text-[10px] font-mono text-ink-muted truncate">
+                  {user?.email}
+                </div>
               </div>
             </div>
             <button
               onClick={logout}
-              className="p-1.5 rounded-lg text-ink-muted hover:text-rose-600 hover:bg-rose-50 transition-colors shrink-0"
-              title="Logout"
+              className="p-1.5 rounded-xl text-ink-muted hover:text-accent-rose hover:bg-accent-rose-light/40 transition-colors"
+              title="Sign out"
             >
               <LogOut className="w-4 h-4" />
             </button>
@@ -157,86 +172,84 @@ export const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 lg:pl-64 flex flex-col min-w-0">
-        {/* Top Bar */}
-        <header className="h-16 bg-white border-b border-surface-border px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+      <div className="flex-1 lg:pl-64 flex flex-col min-h-screen">
+        {/* Top Header Bar */}
+        <header className="h-16 bg-white/80 backdrop-blur-md border-b border-surface-border px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-30">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-ink-secondary hover:text-ink-primary hover:bg-surface-secondary"
+              className="lg:hidden p-2 rounded-xl text-ink-secondary hover:text-ink-primary hover:bg-surface-secondary border border-surface-border"
             >
               <Menu className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2 text-xs font-mono text-ink-muted">
-              <span>{role}</span>
-              <ChevronRight className="w-3.5 h-3.5 opacity-50" />
-              <span className="text-ink-primary font-semibold capitalize">
+              <span>OpenBench</span>
+              <span>/</span>
+              <span className="font-semibold text-ink-primary capitalize">
                 {location.pathname.split('/')[2] || 'Dashboard'}
               </span>
             </div>
           </div>
 
-          {/* Top Bar Actions */}
           <div className="flex items-center gap-3">
-            {/* Quick Demo Switcher */}
+            {/* Quick Demo Switcher inside Portal */}
             <div className="relative">
               <button
                 onClick={() => setDemoMenuOpen(!demoMenuOpen)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium bg-surface-secondary text-ink-secondary hover:text-ink-primary border border-surface-border transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-medium bg-surface-subtle hover:bg-surface-secondary text-ink-secondary hover:text-ink-primary border border-surface-border transition-all shadow-subtle"
               >
                 <Sparkles className="w-3.5 h-3.5 text-accent-cobalt" />
-                <span className="hidden sm:inline">Role Switcher</span>
+                <span className="hidden sm:inline">Role: {role}</span>
+                <span className="sm:hidden">{role}</span>
               </button>
 
               {demoMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 rounded-xl bg-white border border-surface-border shadow-elevated p-1.5 z-50">
-                  <div className="px-2 py-1 text-[11px] font-mono font-semibold uppercase tracking-wider text-ink-muted">
-                    Quick Role Preview:
+                <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-white border border-surface-border shadow-elevated p-2 z-50">
+                  <div className="px-2.5 py-1 text-[11px] font-mono font-semibold uppercase text-ink-muted">
+                    Switch Perspective:
                   </div>
-                  <button
-                    onClick={() => handleDemoSwitch('ADMIN')}
-                    className="w-full text-left px-2.5 py-1.5 text-xs rounded-lg hover:bg-surface-secondary flex items-center justify-between"
-                  >
-                    <span className="font-medium text-ink-primary">Founder Alex (Admin)</span>
-                    <span className="text-[10px] font-mono px-1 bg-purple-50 text-purple-700 rounded">ADMIN</span>
-                  </button>
-                  <button
-                    onClick={() => handleDemoSwitch('TALENT_US')}
-                    className="w-full text-left px-2.5 py-1.5 text-xs rounded-lg hover:bg-surface-secondary flex items-center justify-between"
-                  >
-                    <span className="font-medium text-ink-primary">Marcus Vance (US Dev)</span>
-                    <span className="text-[10px] font-mono px-1 bg-emerald-50 text-emerald-700 rounded">TALENT</span>
-                  </button>
-                  <button
-                    onClick={() => handleDemoSwitch('CLIENT_US')}
-                    className="w-full text-left px-2.5 py-1.5 text-xs rounded-lg hover:bg-surface-secondary flex items-center justify-between"
-                  >
-                    <span className="font-medium text-ink-primary">Sarah Connor (US Client)</span>
-                    <span className="text-[10px] font-mono px-1 bg-amber-50 text-amber-700 rounded">CLIENT</span>
-                  </button>
-                  <button
-                    onClick={() => handleDemoSwitch('CLIENT_IN')}
-                    className="w-full text-left px-2.5 py-1.5 text-xs rounded-lg hover:bg-surface-secondary flex items-center justify-between"
-                  >
-                    <span className="font-medium text-ink-primary">Vikram Singh (IN Client)</span>
-                    <span className="text-[10px] font-mono px-1 bg-amber-50 text-amber-700 rounded">CLIENT</span>
-                  </button>
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => handleDemoSwitch('ADMIN')}
+                      className="w-full text-left px-2.5 py-1.5 text-xs rounded-xl hover:bg-surface-secondary flex items-center justify-between"
+                    >
+                      <span className="font-medium text-ink-primary">Admin Alex</span>
+                      <Badge variant="purple" size="sm">ADMIN</Badge>
+                    </button>
+                    <button
+                      onClick={() => handleDemoSwitch('TALENT_US')}
+                      className="w-full text-left px-2.5 py-1.5 text-xs rounded-xl hover:bg-surface-secondary flex items-center justify-between"
+                    >
+                      <span className="font-medium text-ink-primary">Dev Marcus</span>
+                      <Badge variant="success" size="sm">BENCH</Badge>
+                    </button>
+                    <button
+                      onClick={() => handleDemoSwitch('CLIENT_US')}
+                      className="w-full text-left px-2.5 py-1.5 text-xs rounded-xl hover:bg-surface-secondary flex items-center justify-between"
+                    >
+                      <span className="font-medium text-ink-primary">Client Sarah</span>
+                      <Badge variant="secondary" size="sm">CLIENT</Badge>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
 
             <Link
               to="/"
-              className="text-xs font-mono text-ink-muted hover:text-ink-primary flex items-center gap-1"
+              className="text-xs font-mono text-ink-muted hover:text-ink-primary flex items-center gap-1 transition-colors"
+              target="_blank"
             >
-              <span>Public Site</span>
-              <ExternalLink className="w-3 h-3" />
+              <span className="hidden sm:inline">Public Site</span>
+              <ExternalLink className="w-3.5 h-3.5" />
             </Link>
           </div>
         </header>
 
-        {/* Page Content Body */}
-        <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto">{children}</main>
+        {/* Page Body */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+          {children}
+        </main>
       </div>
     </div>
   );

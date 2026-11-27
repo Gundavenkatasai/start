@@ -3,7 +3,7 @@ import { cn } from '../../lib/utils';
 import { Loader2 } from 'lucide-react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'emerald';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'emerald' | 'subtle';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
@@ -26,21 +26,23 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] select-none';
+      'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-40 disabled:pointer-events-none active:scale-[0.99] select-none';
 
     const variants = {
       primary:
-        'bg-accent-cobalt text-white hover:bg-accent-cobalt-hover shadow-sm focus-visible:ring-accent-cobalt',
+        'bg-accent-cobalt text-white hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow focus-visible:ring-accent-cobalt',
       secondary:
-        'bg-surface-secondary text-ink-primary hover:bg-surface-border border border-surface-border focus-visible:ring-ink-muted',
+        'bg-white text-ink-primary hover:bg-surface-subtle border border-surface-border shadow-subtle hover:border-slate-300 focus-visible:ring-accent-cobalt',
+      subtle:
+        'bg-surface-secondary text-ink-secondary hover:text-ink-primary hover:bg-surface-border/60 border border-transparent focus-visible:ring-ink-muted',
       outline:
-        'border border-surface-border bg-white text-ink-primary hover:bg-surface-subtle focus-visible:ring-accent-cobalt shadow-card',
+        'border border-surface-border bg-white text-ink-primary hover:bg-surface-subtle hover:border-slate-300 focus-visible:ring-accent-cobalt shadow-card',
       ghost:
-        'text-ink-secondary hover:text-ink-primary hover:bg-surface-subtle focus-visible:ring-ink-muted',
+        'text-ink-secondary hover:text-ink-primary hover:bg-surface-secondary/70 focus-visible:ring-ink-muted',
       danger:
-        'bg-rose-600 text-white hover:bg-rose-700 shadow-sm focus-visible:ring-rose-600',
+        'bg-accent-rose text-white hover:bg-accent-rose-hover shadow-sm focus-visible:ring-accent-rose',
       emerald:
-        'bg-accent-emerald text-white hover:bg-emerald-700 shadow-sm focus-visible:ring-accent-emerald',
+        'bg-accent-emerald text-white hover:bg-accent-emerald-hover shadow-sm focus-visible:ring-accent-emerald',
     };
 
     const sizes = {

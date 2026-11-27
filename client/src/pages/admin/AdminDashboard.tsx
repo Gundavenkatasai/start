@@ -4,6 +4,7 @@ import { PortalLayout } from '../../components/layout/PortalLayout';
 import { api } from '../../lib/api';
 import { PayoutStatusBadge } from '../../components/shared/StatusBadge';
 import { formatCurrency, formatDate } from '../../lib/formatters';
+import { Badge } from '../../components/ui/Badge';
 import {
   Users,
   Briefcase,
@@ -16,6 +17,8 @@ import {
   Send,
   Download,
   AlertCircle,
+  Sparkles,
+  Layers,
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
@@ -75,30 +78,32 @@ export const AdminDashboard: React.FC = () => {
     <PortalLayout>
       <div className="space-y-6">
         {/* Header Strip */}
-        <div className="bg-white p-6 rounded-2xl border border-surface-border shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-surface-border shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
+            <div className="flex items-center gap-2 mb-2">
+              <Badge variant="purple" dot pulse>
                 2-PERSON FOUNDER OPS CONSOLE
-              </span>
-              <span className="text-xs font-mono text-ink-muted">Alex & Priya</span>
+              </Badge>
+              <span className="text-xs font-mono text-ink-muted">Alex & Dev</span>
             </div>
-            <h1 className="text-2xl font-bold text-ink-primary">Operations & Delivery Overview</h1>
-            <p className="text-xs text-ink-secondary mt-0.5">
+            <h1 className="text-2xl sm:text-3xl font-bold text-ink-primary font-sans">
+              Operations & Delivery Overview
+            </h1>
+            <p className="text-xs sm:text-sm text-ink-secondary mt-1">
               Live tracking across Talent Bench, Client Pipeline, QA Gate, and Split Payouts.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-center">
+          <div className="flex items-center gap-2.5 self-start sm:self-center">
             <Link
               to="/admin/talent"
-              className="px-3.5 py-2 rounded-xl bg-surface-secondary text-ink-primary text-xs font-semibold hover:bg-surface-border border border-surface-border transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-surface-subtle hover:bg-surface-secondary text-ink-primary text-xs font-semibold border border-surface-border transition-all shadow-subtle"
             >
               Talent Bench CRM
             </Link>
             <Link
               to="/admin/projects"
-              className="px-3.5 py-2 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow transition-all"
             >
               Pipeline & Scoping
             </Link>
@@ -106,32 +111,32 @@ export const AdminDashboard: React.FC = () => {
         </div>
 
         {/* 6-Stage Operational Protocol Visualizer */}
-        <div className="bg-white p-5 rounded-2xl border border-surface-border shadow-card">
-          <div className="flex items-center justify-between mb-3">
+        <div className="bg-white p-6 rounded-3xl border border-surface-border shadow-subtle space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-surface-border/80 pb-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-accent-cobalt">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-ink-primary font-sans">
                 6-Stage Collective Operational Protocol
               </span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+              <Badge variant="primary" size="sm">
                 Part 1 Standard
-              </span>
+              </Badge>
             </div>
-            <span className="text-xs font-mono text-ink-muted hidden sm:inline">
+            <span className="text-[11px] font-mono text-ink-muted">
               Zero Cent Drift • Founder QA Gate • 70/30 Split
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 text-xs">
             {/* Stage 1 */}
             <Link
               to="/admin/talent"
-              className="p-3 rounded-xl bg-surface-subtle border border-surface-border hover:border-accent-cobalt/40 transition-all group"
+              className="p-3.5 rounded-2xl bg-surface-subtle/80 border border-surface-border hover:bg-white hover:border-slate-300 hover:shadow-subtle transition-all duration-150 group"
             >
-              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1">
+              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1.5">
                 <span>STAGE 1</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span className="w-2 h-2 rounded-full bg-accent-emerald animate-pulse" />
               </div>
-              <div className="font-bold text-ink-primary group-hover:text-accent-cobalt transition-colors">
+              <div className="font-bold text-ink-primary group-hover:text-accent-cobalt transition-colors font-sans">
                 Talent Intake
               </div>
               <div className="text-[10px] text-ink-muted font-mono mt-0.5">
@@ -142,13 +147,13 @@ export const AdminDashboard: React.FC = () => {
             {/* Stage 2 */}
             <Link
               to="/admin/projects"
-              className="p-3 rounded-xl bg-surface-subtle border border-surface-border hover:border-accent-cobalt/40 transition-all group"
+              className="p-3.5 rounded-2xl bg-surface-subtle/80 border border-surface-border hover:bg-white hover:border-slate-300 hover:shadow-subtle transition-all duration-150 group"
             >
-              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1">
+              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1.5">
                 <span>STAGE 2</span>
-                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span className="w-2 h-2 rounded-full bg-accent-cobalt" />
               </div>
-              <div className="font-bold text-ink-primary group-hover:text-accent-cobalt transition-colors">
+              <div className="font-bold text-ink-primary group-hover:text-accent-cobalt transition-colors font-sans">
                 Client Scoping
               </div>
               <div className="text-[10px] text-ink-muted font-mono mt-0.5">
@@ -159,13 +164,13 @@ export const AdminDashboard: React.FC = () => {
             {/* Stage 3 */}
             <Link
               to="/admin/projects"
-              className="p-3 rounded-xl bg-surface-subtle border border-surface-border hover:border-accent-cobalt/40 transition-all group"
+              className="p-3.5 rounded-2xl bg-surface-subtle/80 border border-surface-border hover:bg-white hover:border-slate-300 hover:shadow-subtle transition-all duration-150 group"
             >
-              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1">
+              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1.5">
                 <span>STAGE 3</span>
-                <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                <span className="w-2 h-2 rounded-full bg-accent-purple" />
               </div>
-              <div className="font-bold text-ink-primary group-hover:text-accent-cobalt transition-colors">
+              <div className="font-bold text-ink-primary group-hover:text-accent-cobalt transition-colors font-sans">
                 Pod Assembly
               </div>
               <div className="text-[10px] text-ink-muted font-mono mt-0.5">
@@ -174,12 +179,12 @@ export const AdminDashboard: React.FC = () => {
             </Link>
 
             {/* Stage 4 */}
-            <div className="p-3 rounded-xl bg-surface-subtle border border-surface-border">
-              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1">
+            <div className="p-3.5 rounded-2xl bg-surface-subtle/80 border border-surface-border">
+              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1.5">
                 <span>STAGE 4</span>
-                <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+                <span className="w-2 h-2 rounded-full bg-indigo-500" />
               </div>
-              <div className="font-bold text-ink-primary">
+              <div className="font-bold text-ink-primary font-sans">
                 Open-Book SOW
               </div>
               <div className="text-[10px] text-ink-muted font-mono mt-0.5">
@@ -190,13 +195,13 @@ export const AdminDashboard: React.FC = () => {
             {/* Stage 5 */}
             <Link
               to="/admin/projects"
-              className="p-3 rounded-xl bg-surface-subtle border border-surface-border hover:border-accent-cobalt/40 transition-all group"
+              className="p-3.5 rounded-2xl bg-surface-subtle/80 border border-surface-border hover:bg-white hover:border-slate-300 hover:shadow-subtle transition-all duration-150 group"
             >
-              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1">
+              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1.5">
                 <span>STAGE 5</span>
-                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span className="w-2 h-2 rounded-full bg-accent-amber" />
               </div>
-              <div className="font-bold text-ink-primary group-hover:text-accent-cobalt transition-colors">
+              <div className="font-bold text-ink-primary group-hover:text-accent-cobalt transition-colors font-sans">
                 Founder QA Gate
               </div>
               <div className="text-[10px] text-ink-muted font-mono mt-0.5">
@@ -207,13 +212,13 @@ export const AdminDashboard: React.FC = () => {
             {/* Stage 6 */}
             <a
               href="#pending-payouts-table"
-              className="p-3 rounded-xl bg-surface-subtle border border-surface-border hover:border-accent-cobalt/40 transition-all group"
+              className="p-3.5 rounded-2xl bg-surface-subtle/80 border border-surface-border hover:bg-white hover:border-slate-300 hover:shadow-subtle transition-all duration-150 group"
             >
-              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1">
+              <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mb-1.5">
                 <span>STAGE 6</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span className="w-2 h-2 rounded-full bg-accent-emerald" />
               </div>
-              <div className="font-bold text-ink-primary group-hover:text-accent-cobalt transition-colors">
+              <div className="font-bold text-ink-primary group-hover:text-accent-cobalt transition-colors font-sans">
                 Split Payouts
               </div>
               <div className="text-[10px] text-ink-muted font-mono mt-0.5">
@@ -224,9 +229,9 @@ export const AdminDashboard: React.FC = () => {
         </div>
 
         {/* KPI Strip */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
           {/* Active Bench Count */}
-          <div className="p-4 bg-white rounded-2xl border border-surface-border shadow-card">
+          <div className="p-5 bg-white rounded-2xl border border-surface-border shadow-subtle">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-muted block">
               Active Bench
             </span>
@@ -234,12 +239,12 @@ export const AdminDashboard: React.FC = () => {
               {kpi.activeBenchCount || 0}
             </div>
             <div className="text-[11px] text-accent-emerald font-mono mt-0.5">
-              {kpi.availableNowCount || 0} Available Now (72h)
+              {kpi.availableNowCount || 0} Available (72h)
             </div>
           </div>
 
           {/* Waitlisted Intake */}
-          <div className="p-4 bg-white rounded-2xl border border-surface-border shadow-card">
+          <div className="p-5 bg-white rounded-2xl border border-surface-border shadow-subtle">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-muted block">
               Waitlisted Intake
             </span>
@@ -250,7 +255,7 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           {/* Open Client Briefs */}
-          <div className="p-4 bg-white rounded-2xl border border-surface-border shadow-card">
+          <div className="p-5 bg-white rounded-2xl border border-surface-border shadow-subtle">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-muted block">
               Draft Briefs
             </span>
@@ -261,18 +266,18 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           {/* Pending QA Gate */}
-          <div className="p-4 bg-white rounded-2xl border border-surface-border shadow-card">
+          <div className="p-5 bg-white rounded-2xl border border-surface-border shadow-subtle">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-muted block">
-              Pending Founder QA
+              Pending QA Gate
             </span>
-            <div className="text-2xl font-extrabold font-mono text-purple-700 mt-1">
+            <div className="text-2xl font-extrabold font-mono text-accent-purple mt-1">
               {kpi.pendingQACount || 0}
             </div>
             <div className="text-[11px] text-ink-muted font-mono mt-0.5">Awaiting QA Review</div>
           </div>
 
           {/* Payouts Due 48h */}
-          <div className="p-4 bg-white rounded-2xl border border-surface-border shadow-card">
+          <div className="p-5 bg-white rounded-2xl border border-surface-border shadow-subtle">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-muted block">
               Payouts Due 48h
             </span>
@@ -284,38 +289,38 @@ export const AdminDashboard: React.FC = () => {
         </div>
 
         {/* GMV by Currency Strip */}
-        <div className="bg-white p-5 rounded-2xl border border-surface-border shadow-card">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-ink-muted">
+        <div className="bg-white p-6 rounded-3xl border border-surface-border shadow-subtle space-y-4">
+          <div className="flex items-center justify-between border-b border-surface-border/80 pb-3">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-ink-primary font-sans">
               Active Project Pipeline GMV (By Regional Currency)
             </span>
-            <span className="text-xs font-mono text-ink-secondary">
+            <span className="text-xs font-mono text-ink-muted">
               US • UK • Europe • India
             </span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="p-3 bg-surface-subtle rounded-xl border border-surface-border">
+            <div className="p-4 bg-surface-subtle/80 rounded-2xl border border-surface-border">
               <span className="text-[10px] font-mono text-ink-muted block">USD PIPELINE</span>
-              <span className="text-lg font-bold font-mono text-ink-primary">
+              <span className="text-xl font-bold font-mono text-ink-primary mt-1 block">
                 {formatCurrency(kpi.gmvByCurrency?.USD || 0, 'USD')}
               </span>
             </div>
-            <div className="p-3 bg-surface-subtle rounded-xl border border-surface-border">
+            <div className="p-4 bg-surface-subtle/80 rounded-2xl border border-surface-border">
               <span className="text-[10px] font-mono text-ink-muted block">GBP PIPELINE</span>
-              <span className="text-lg font-bold font-mono text-ink-primary">
+              <span className="text-xl font-bold font-mono text-ink-primary mt-1 block">
                 {formatCurrency(kpi.gmvByCurrency?.GBP || 0, 'GBP')}
               </span>
             </div>
-            <div className="p-3 bg-surface-subtle rounded-xl border border-surface-border">
+            <div className="p-4 bg-surface-subtle/80 rounded-2xl border border-surface-border">
               <span className="text-[10px] font-mono text-ink-muted block">EUR PIPELINE</span>
-              <span className="text-lg font-bold font-mono text-ink-primary">
+              <span className="text-xl font-bold font-mono text-ink-primary mt-1 block">
                 {formatCurrency(kpi.gmvByCurrency?.EUR || 0, 'EUR')}
               </span>
             </div>
-            <div className="p-3 bg-surface-subtle rounded-xl border border-surface-border">
+            <div className="p-4 bg-surface-subtle/80 rounded-2xl border border-surface-border">
               <span className="text-[10px] font-mono text-ink-muted block">INR PIPELINE</span>
-              <span className="text-lg font-bold font-mono text-ink-primary">
+              <span className="text-xl font-bold font-mono text-ink-primary mt-1 block">
                 {formatCurrency(kpi.gmvByCurrency?.INR || 0, 'INR')}
               </span>
             </div>
@@ -323,10 +328,10 @@ export const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Payouts Due within 48h Action Table */}
-        <div id="pending-payouts-table" className="bg-white rounded-2xl border border-surface-border shadow-card overflow-hidden">
-          <div className="p-6 border-b border-surface-border flex items-center justify-between">
+        <div id="pending-payouts-table" className="bg-white rounded-3xl border border-surface-border shadow-subtle overflow-hidden">
+          <div className="p-6 border-b border-surface-border/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 className="text-sm font-bold text-ink-primary uppercase tracking-wider font-mono">
+              <h3 className="text-base font-bold text-ink-primary font-sans">
                 Contractor Payouts Ready for Release ({pendingPayouts.length})
               </h3>
               <p className="text-xs text-ink-secondary mt-0.5">
@@ -337,7 +342,7 @@ export const AdminDashboard: React.FC = () => {
               href="/api/admin/payouts/export-csv"
               target="_blank"
               rel="noreferrer"
-              className="px-3 py-1.5 rounded-lg bg-surface-secondary text-ink-primary hover:bg-surface-border text-xs font-mono font-semibold flex items-center gap-1.5 border border-surface-border"
+              className="px-3.5 py-2 rounded-xl bg-surface-subtle hover:bg-surface-secondary text-ink-primary text-xs font-mono font-semibold flex items-center gap-1.5 border border-surface-border transition-all self-start sm:self-center"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export CSV Ledger</span>
@@ -345,53 +350,53 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           {pendingPayouts.length === 0 ? (
-            <div className="py-10 text-center text-xs text-ink-muted font-mono">
+            <div className="py-12 text-center text-xs text-ink-muted font-mono">
               No pending payouts due at this moment. All cleared milestones have been disbursed.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-surface-subtle border-b border-surface-border text-ink-muted uppercase font-mono text-[10px]">
+                <thead className="bg-surface-subtle/80 border-b border-surface-border text-ink-muted uppercase font-mono text-[10px]">
                   <tr>
-                    <th className="py-3 px-4">Contractor</th>
-                    <th className="py-3 px-4">Project & Milestone</th>
-                    <th className="py-3 px-4">Gross Payout</th>
-                    <th className="py-3 px-4">India TDS</th>
-                    <th className="py-3 px-4">Net Payout</th>
-                    <th className="py-3 px-4">Action</th>
+                    <th className="py-3.5 px-6">Contractor</th>
+                    <th className="py-3.5 px-6">Project & Milestone</th>
+                    <th className="py-3.5 px-6">Gross Payout</th>
+                    <th className="py-3.5 px-6">India TDS</th>
+                    <th className="py-3.5 px-6">Net Payout</th>
+                    <th className="py-3.5 px-6 text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-surface-border">
+                <tbody className="divide-y divide-surface-border/80 font-mono">
                   {pendingPayouts.map((p: any) => (
                     <tr key={p.id} className="hover:bg-surface-subtle/50 transition-colors">
-                      <td className="py-3 px-4">
-                        <div className="font-bold text-ink-primary">
+                      <td className="py-4 px-6">
+                        <div className="font-bold text-ink-primary font-sans text-sm">
                           {p.podMember?.talent?.user?.fullName}
                         </div>
-                        <div className="text-[10px] text-ink-muted font-mono">{p.podMember?.roleTitle}</div>
+                        <div className="text-[11px] text-ink-muted font-mono">{p.podMember?.roleTitle}</div>
                       </td>
-                      <td className="py-3 px-4">
-                        <div className="font-semibold text-ink-primary">
+                      <td className="py-4 px-6">
+                        <div className="font-semibold text-ink-primary font-sans">
                           {p.podMember?.project?.title}
                         </div>
-                        <div className="text-[10px] text-ink-muted">{p.milestone?.title}</div>
+                        <div className="text-[11px] text-ink-muted">{p.milestone?.title}</div>
                       </td>
-                      <td className="py-3 px-4 font-mono">{formatCurrency(p.grossAmountMinorUnits, p.currency)}</td>
-                      <td className="py-3 px-4 font-mono text-rose-600">
+                      <td className="py-4 px-6 font-bold text-ink-primary">{formatCurrency(p.grossAmountMinorUnits, p.currency)}</td>
+                      <td className="py-4 px-6 text-accent-rose">
                         {p.tdsAmountMinorUnits > 0
                           ? `-${formatCurrency(p.tdsAmountMinorUnits, p.currency)}`
                           : '₹0.00'}
                       </td>
-                      <td className="py-3 px-4 font-mono font-bold text-accent-emerald">
+                      <td className="py-4 px-6 font-bold text-accent-emerald text-sm">
                         {formatCurrency(p.netAmountMinorUnits, p.currency)}
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-4 px-6 text-right">
                         <button
                           onClick={() => handleQuickRelease(p.id)}
                           disabled={releasingId === p.id}
-                          className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-semibold flex items-center gap-1 shadow-sm disabled:opacity-50"
+                          className="px-4 py-2 rounded-xl bg-accent-emerald text-white hover:bg-accent-emerald-hover text-xs font-semibold flex items-center gap-1.5 shadow-sm ml-auto disabled:opacity-50 transition-all"
                         >
-                          <Send className="w-3 h-3" />
+                          <Send className="w-3.5 h-3.5" />
                           <span>{releasingId === p.id ? 'Releasing...' : 'Release Payout'}</span>
                         </button>
                       </td>

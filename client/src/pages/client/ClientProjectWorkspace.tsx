@@ -4,6 +4,7 @@ import { PortalLayout } from '../../components/layout/PortalLayout';
 import { api } from '../../lib/api';
 import { MilestoneStatusBadge, ProjectStatusBadge } from '../../components/shared/StatusBadge';
 import { formatCurrency, formatDate } from '../../lib/formatters';
+import { Badge } from '../../components/ui/Badge';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -17,6 +18,7 @@ import {
   FileCheck,
   PlusCircle,
   X,
+  Layers,
 } from 'lucide-react';
 
 export const ClientProjectWorkspace: React.FC = () => {
@@ -166,12 +168,12 @@ export const ClientProjectWorkspace: React.FC = () => {
   if (error || !project) {
     return (
       <PortalLayout>
-        <div className="p-8 bg-white rounded-2xl border border-surface-border text-center space-y-4">
-          <AlertCircle className="w-8 h-8 text-rose-500 mx-auto" />
-          <h2 className="text-xl font-bold">{error || 'Project not found'}</h2>
+        <div className="p-8 sm:p-12 bg-white rounded-3xl border border-surface-border text-center space-y-4 shadow-subtle">
+          <AlertCircle className="w-8 h-8 text-accent-rose mx-auto" />
+          <h2 className="text-xl font-bold font-sans">{error || 'Project not found'}</h2>
           <Link
             to="/client/dashboard"
-            className="text-xs font-mono text-accent-cobalt inline-flex items-center gap-1"
+            className="text-xs font-mono text-accent-cobalt inline-flex items-center gap-1 hover:underline"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Client Dashboard</span>
@@ -185,44 +187,49 @@ export const ClientProjectWorkspace: React.FC = () => {
     <PortalLayout>
       <div className="space-y-6">
         {/* Workspace Top Bar */}
-        <div className="bg-white p-6 rounded-2xl border border-surface-border shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-surface-border shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <Link
               to="/client/dashboard"
-              className="text-xs font-mono text-ink-muted hover:text-ink-primary inline-flex items-center gap-1 mb-2"
+              className="text-xs font-mono text-ink-muted hover:text-ink-primary inline-flex items-center gap-1 mb-2.5 transition-colors"
             >
               <ArrowLeft className="w-3 h-3" />
               <span>Projects Dashboard</span>
             </Link>
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1.5">
               <ProjectStatusBadge status={project.status} />
-              <span className="text-xs font-mono text-ink-muted">
-                Revision Cap: <strong>{project.revisionCapPerMilestone} rounds / milestone</strong>
-              </span>
+              <Badge variant="secondary" size="sm">
+                Cap: {project.revisionCapPerMilestone} rounds / milestone
+              </Badge>
             </div>
-            <h1 className="text-2xl font-bold text-ink-primary">{project.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-ink-primary font-sans">{project.title}</h1>
           </div>
 
           <div className="text-left md:text-right">
             <span className="text-[10px] font-mono text-ink-muted uppercase block">Total Project Contract</span>
-            <div className="text-2xl font-extrabold font-mono text-ink-primary">
+            <div className="text-2xl sm:text-3xl font-extrabold font-mono text-ink-primary">
               {formatCurrency(project.grossBudgetMinorUnits, project.currency)}
             </div>
-            <span className="text-[11px] font-mono text-accent-emerald">
+            <span className="text-xs font-mono text-accent-emerald font-semibold">
               Milestone Escrow (50% / 30% / 20%)
             </span>
           </div>
         </div>
 
         {/* Milestone Tracker & Deliverable Review Gate */}
-        <div className="bg-white p-6 rounded-2xl border border-surface-border shadow-card space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-ink-primary uppercase tracking-wider font-mono">
-              Milestones, Escrow Deposits & Founder QA Review
-            </h3>
-            <span className="text-xs font-mono text-ink-muted">
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-surface-border shadow-subtle space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-surface-border/80 pb-4">
+            <div>
+              <h3 className="text-base font-bold text-ink-primary font-sans">
+                Milestones, Escrow Deposits & Founder QA Review
+              </h3>
+              <p className="text-xs text-ink-secondary mt-0.5">
+                Funds remain safe in escrow until you approve final deliverables.
+              </p>
+            </div>
+            <Badge variant="primary">
               {project.milestones?.length || 3} Deliverable Sprints
-            </span>
+            </Badge>
           </div>
 
           <div className="space-y-4">
@@ -235,25 +242,25 @@ export const ClientProjectWorkspace: React.FC = () => {
               return (
                 <div
                   key={m.id}
-                  className="p-5 rounded-xl border border-surface-border bg-surface-subtle space-y-4"
+                  className="p-5 sm:p-6 rounded-2xl border border-surface-border bg-surface-subtle/70 hover:bg-white hover:border-slate-300 hover:shadow-subtle transition-all duration-200 space-y-4"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <span className="w-7 h-7 rounded-full bg-slate-900 text-white font-mono text-xs font-bold flex items-center justify-center shrink-0">
-                        {m.sequenceOrder}
+                      <span className="w-8 h-8 rounded-xl bg-accent-cobalt-light text-accent-cobalt border border-accent-cobalt-border font-mono text-xs font-bold flex items-center justify-center shrink-0">
+                        0{m.sequenceOrder}
                       </span>
                       <div>
-                        <h4 className="text-sm font-bold text-ink-primary">{m.title}</h4>
-                        <p className="text-xs text-ink-secondary mt-0.5">
+                        <h4 className="text-sm font-bold text-ink-primary font-sans">{m.title}</h4>
+                        <p className="text-xs text-ink-secondary mt-0.5 leading-relaxed">
                           {m.deliverablesSummary}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4 shrink-0">
+                    <div className="flex items-center gap-3 shrink-0">
                       <MilestoneStatusBadge status={m.status} />
                       <div className="text-right">
-                        <div className="text-sm font-bold font-mono text-ink-primary">
+                        <div className="text-sm sm:text-base font-bold font-mono text-ink-primary">
                           {formatCurrency(m.amountMinorUnits, project.currency)}
                         </div>
                         <span className="text-[10px] font-mono text-ink-muted">{m.percentOfBudget}% Escrow</span>
@@ -262,16 +269,17 @@ export const ClientProjectWorkspace: React.FC = () => {
                   </div>
 
                   {/* Actions & Payment Strip */}
-                  <div className="p-3 bg-white rounded-lg border border-surface-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                  <div className="p-3.5 bg-white rounded-xl border border-surface-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-subtle">
                     <div className="flex items-center gap-3">
                       {isPaid ? (
-                        <span className="text-emerald-700 font-mono font-medium flex items-center gap-1">
+                        <span className="text-accent-emerald font-mono font-medium flex items-center gap-1.5">
                           <CheckCircle2 className="w-3.5 h-3.5" />
-                          <span>Deposit Paid ({formatDate(m.paidAt)})</span>
+                          <span>Deposit Escrowed ({formatDate(m.paidAt)})</span>
                         </span>
                       ) : (
-                        <span className="text-amber-800 font-mono font-medium">
-                          Deposit Required to Start Sprint
+                        <span className="text-accent-amber font-mono font-medium flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>Deposit Required to Start Sprint</span>
                         </span>
                       )}
 
@@ -285,7 +293,7 @@ export const ClientProjectWorkspace: React.FC = () => {
                       {!isPaid && (
                         <button
                           onClick={() => setCheckoutMilestone(m)}
-                          className="px-3.5 py-1.5 rounded-lg bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm flex items-center gap-1.5"
+                          className="px-4 py-2 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow flex items-center gap-1.5 transition-all"
                         >
                           <CreditCard className="w-3.5 h-3.5" />
                           <span>Pay {m.percentOfBudget}% Deposit ({formatCurrency(m.amountMinorUnits, project.currency)})</span>
@@ -296,7 +304,7 @@ export const ClientProjectWorkspace: React.FC = () => {
                       {m.status === 'SUBMITTED_TO_CLIENT' && (
                         <button
                           onClick={() => setReviewMilestone(m)}
-                          className="px-3.5 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 shadow-sm flex items-center gap-1.5"
+                          className="px-4 py-2 rounded-xl bg-accent-emerald text-white text-xs font-semibold hover:bg-accent-emerald-hover shadow-sm hover:shadow-glow flex items-center gap-1.5 transition-all"
                         >
                           <FileCheck className="w-3.5 h-3.5" />
                           <span>Review & Approve Milestone</span>
@@ -304,17 +312,16 @@ export const ClientProjectWorkspace: React.FC = () => {
                       )}
 
                       {m.status === 'APPROVED_PAID' && (
-                        <span className="text-xs font-mono font-bold text-accent-emerald flex items-center gap-1">
-                          <CheckCircle2 className="w-4 h-4" />
-                          <span>Signed-Off</span>
-                        </span>
+                        <Badge variant="success" dot>
+                          Approved & Released
+                        </Badge>
                       )}
                     </div>
                   </div>
 
                   {/* QA-Approved Deliverables Preview */}
                   {approvedDeliverable && (
-                    <div className="p-3.5 rounded-lg bg-emerald-50/50 border border-emerald-200 text-xs space-y-1.5">
+                    <div className="p-4 rounded-xl bg-accent-emerald-light/50 border border-accent-emerald-border text-xs space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="font-semibold text-emerald-950 flex items-center gap-1.5">
                           <ExternalLink className="w-3.5 h-3.5 text-accent-emerald" />
@@ -327,12 +334,12 @@ export const ClientProjectWorkspace: React.FC = () => {
                             Founder QA-Approved Deliverable Link
                           </a>
                         </span>
-                        <span className="text-[10px] font-mono text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-200">
+                        <Badge variant="success" size="sm">
                           QA PASSED
-                        </span>
+                        </Badge>
                       </div>
                       {approvedDeliverable.notes && (
-                        <p className="text-ink-secondary text-[11px]">
+                        <p className="text-ink-secondary text-[11px] leading-relaxed">
                           Release Notes: "{approvedDeliverable.notes}"
                         </p>
                       )}
@@ -346,25 +353,25 @@ export const ClientProjectWorkspace: React.FC = () => {
 
         {/* Change Orders Section */}
         {project.changeOrders && project.changeOrders.length > 0 && (
-          <div className="bg-white p-6 rounded-2xl border border-surface-border shadow-card space-y-3">
-            <h3 className="text-sm font-bold text-ink-primary uppercase tracking-wider font-mono">
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-surface-border shadow-subtle space-y-4">
+            <h3 className="text-base font-bold text-ink-primary font-sans">
               Funded Change Orders
             </h3>
             <div className="space-y-2">
               {project.changeOrders.map((co: any) => (
                 <div
                   key={co.id}
-                  className="p-3.5 bg-surface-subtle rounded-xl border border-surface-border flex items-center justify-between text-xs"
+                  className="p-4 bg-surface-subtle/80 rounded-2xl border border-surface-border flex items-center justify-between text-xs"
                 >
                   <div>
-                    <div className="font-bold text-ink-primary">{co.title}</div>
-                    <div className="text-ink-secondary text-[11px]">{co.description}</div>
+                    <div className="font-bold text-ink-primary font-sans">{co.title}</div>
+                    <div className="text-ink-secondary text-[11px] mt-0.5">{co.description}</div>
                   </div>
                   <div className="text-right">
-                    <div className="font-mono font-bold text-accent-cobalt">
+                    <div className="font-mono font-bold text-accent-cobalt text-sm">
                       +{formatCurrency(co.additionalAmountMinorUnits, project.currency)}
                     </div>
-                    <span className="text-[10px] font-mono text-ink-muted">{co.status}</span>
+                    <Badge variant="secondary" size="sm">{co.status}</Badge>
                   </div>
                 </div>
               ))}
@@ -374,18 +381,18 @@ export const ClientProjectWorkspace: React.FC = () => {
 
         {/* Milestone Payment Modal */}
         {checkoutMilestone && (
-          <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-white rounded-2xl p-6 border border-surface-border shadow-elevated space-y-5">
-              <div className="flex items-center justify-between border-b border-surface-border pb-3">
+          <div className="fixed inset-0 z-50 bg-slate-900/30 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 border border-surface-border shadow-smooth space-y-5 animate-in fade-in zoom-in-95 duration-150">
+              <div className="flex items-center justify-between border-b border-surface-border/80 pb-3">
                 <div className="flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-accent-cobalt" />
-                  <h3 className="text-base font-bold text-ink-primary">
+                  <h3 className="text-base font-bold text-ink-primary font-sans">
                     Milestone Escrow Deposit
                   </h3>
                 </div>
                 <button
                   onClick={() => setCheckoutMilestone(null)}
-                  className="p-1 rounded-lg text-ink-muted hover:text-ink-primary"
+                  className="p-1.5 rounded-xl text-ink-muted hover:text-ink-primary hover:bg-surface-secondary"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -394,29 +401,29 @@ export const ClientProjectWorkspace: React.FC = () => {
               {paymentSuccess ? (
                 <div className="py-6 text-center space-y-2 text-accent-emerald">
                   <CheckCircle2 className="w-12 h-12 mx-auto animate-bounce" />
-                  <div className="text-base font-bold">Escrow Payment Verified!</div>
+                  <div className="text-base font-bold font-sans">Escrow Payment Verified!</div>
                   <p className="text-xs text-ink-secondary">
                     Receipt generated. Sprint is now activated for the pod.
                   </p>
                 </div>
               ) : (
                 <div className="space-y-4 text-xs">
-                  <div className="p-3 bg-surface-subtle rounded-xl border border-surface-border space-y-1">
+                  <div className="p-4 bg-surface-subtle/80 rounded-2xl border border-surface-border space-y-1">
                     <div className="text-ink-muted font-mono uppercase text-[10px]">
                       MILESTONE 0{checkoutMilestone.sequenceOrder}
                     </div>
-                    <div className="text-sm font-bold text-ink-primary">{checkoutMilestone.title}</div>
-                    <div className="text-lg font-bold font-mono text-accent-cobalt pt-1">
+                    <div className="text-sm font-bold text-ink-primary font-sans">{checkoutMilestone.title}</div>
+                    <div className="text-xl font-bold font-mono text-accent-cobalt pt-1">
                       {formatCurrency(checkoutMilestone.amountMinorUnits, project.currency)}
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-200 text-blue-950 space-y-1">
+                  <div className="p-4 rounded-2xl bg-accent-cobalt-light/60 border border-accent-cobalt-border text-blue-950 space-y-1">
                     <div className="font-bold flex items-center gap-1.5">
                       <ShieldCheck className="w-4 h-4 text-accent-cobalt" />
                       <span>Unified Payment Rails:</span>
                     </div>
-                    <p className="text-[11px] text-blue-900">
+                    <p className="text-[11px] text-blue-900 leading-relaxed">
                       {project.currency === 'INR'
                         ? 'Processed via Razorpay (UPI, Netbanking, Cards).'
                         : 'Processed via Stripe (Cards, Apple Pay, Wire).'}
@@ -426,7 +433,7 @@ export const ClientProjectWorkspace: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-surface-border">
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-surface-border/80">
                     <button
                       type="button"
                       onClick={() => setCheckoutMilestone(null)}
@@ -438,7 +445,7 @@ export const ClientProjectWorkspace: React.FC = () => {
                       type="button"
                       disabled={paying}
                       onClick={handleMilestonePayment}
-                      className="px-5 py-2.5 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm disabled:opacity-50 flex items-center gap-1.5"
+                      className="px-5 py-2.5 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow disabled:opacity-50 flex items-center gap-1.5 transition-all"
                     >
                       <CreditCard className="w-3.5 h-3.5" />
                       <span>
@@ -456,15 +463,15 @@ export const ClientProjectWorkspace: React.FC = () => {
 
         {/* Deliverable Review Modal (Approve or Request Revision) */}
         {reviewMilestone && (
-          <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-white rounded-2xl p-6 border border-surface-border shadow-elevated space-y-4">
-              <div className="flex items-center justify-between border-b border-surface-border pb-3">
-                <h3 className="text-base font-bold text-ink-primary">
+          <div className="fixed inset-0 z-50 bg-slate-900/30 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 border border-surface-border shadow-smooth space-y-4 animate-in fade-in zoom-in-95 duration-150">
+              <div className="flex items-center justify-between border-b border-surface-border/80 pb-3">
+                <h3 className="text-base font-bold text-ink-primary font-sans">
                   Review Deliverables for M{reviewMilestone.sequenceOrder}
                 </h3>
                 <button
                   onClick={() => setReviewMilestone(null)}
-                  className="p-1 rounded-lg text-ink-muted hover:text-ink-primary"
+                  className="p-1.5 rounded-xl text-ink-muted hover:text-ink-primary hover:bg-surface-secondary"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -477,9 +484,9 @@ export const ClientProjectWorkspace: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setReviewAction('APPROVE')}
-                      className={`p-3 rounded-xl border text-center transition-all ${
+                      className={`p-3 rounded-2xl border text-center transition-all ${
                         reviewAction === 'APPROVE'
-                          ? 'bg-emerald-50 border-accent-emerald text-emerald-950 font-bold'
+                          ? 'bg-accent-emerald-light border-accent-emerald text-emerald-950 font-bold shadow-subtle'
                           : 'bg-white border-surface-border text-ink-secondary hover:bg-surface-subtle'
                       }`}
                     >
@@ -488,9 +495,9 @@ export const ClientProjectWorkspace: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setReviewAction('REQUEST_REVISION')}
-                      className={`p-3 rounded-xl border text-center transition-all ${
+                      className={`p-3 rounded-2xl border text-center transition-all ${
                         reviewAction === 'REQUEST_REVISION'
-                          ? 'bg-rose-50 border-rose-400 text-rose-950 font-bold'
+                          ? 'bg-accent-rose-light border-accent-rose text-rose-950 font-bold shadow-subtle'
                           : 'bg-white border-surface-border text-ink-secondary hover:bg-surface-subtle'
                       }`}
                     >
@@ -504,17 +511,17 @@ export const ClientProjectWorkspace: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-ink-primary mb-1">Feedback / Notes</label>
+                  <label className="block font-semibold text-ink-primary mb-1.5">Feedback / Notes</label>
                   <textarea
                     rows={3}
                     value={reviewFeedback}
                     onChange={(e) => setReviewFeedback(e.target.value)}
                     placeholder="Enter approval confirmation or specific revision notes for the pod..."
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-surface-border focus:border-accent-cobalt outline-none"
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none transition-all shadow-subtle leading-relaxed"
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-surface-border">
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-surface-border/80">
                   <button
                     type="button"
                     onClick={() => setReviewMilestone(null)}
@@ -525,7 +532,7 @@ export const ClientProjectWorkspace: React.FC = () => {
                   <button
                     type="submit"
                     disabled={reviewing}
-                    className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow disabled:opacity-50 transition-all"
                   >
                     {reviewing ? 'Recording Review...' : 'Submit Decision'}
                   </button>
@@ -537,53 +544,53 @@ export const ClientProjectWorkspace: React.FC = () => {
 
         {/* Change Order Modal */}
         {showChangeOrderModal && (
-          <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-white rounded-2xl p-6 border border-surface-border shadow-elevated space-y-4">
-              <div className="flex items-center justify-between border-b border-surface-border pb-3">
-                <div className="flex items-center gap-2 text-rose-600 font-bold text-sm">
+          <div className="fixed inset-0 z-50 bg-slate-900/30 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 border border-surface-border shadow-smooth space-y-4 animate-in fade-in zoom-in-95 duration-150">
+              <div className="flex items-center justify-between border-b border-surface-border/80 pb-3">
+                <div className="flex items-center gap-2 text-accent-rose font-bold text-sm">
                   <AlertCircle className="w-4 h-4" />
                   <span>Revision Cap Exceeded — Submit Change Order</span>
                 </div>
                 <button
                   onClick={() => setShowChangeOrderModal(false)}
-                  className="p-1 rounded-lg text-ink-muted hover:text-ink-primary"
+                  className="p-1.5 rounded-xl text-ink-muted hover:text-ink-primary hover:bg-surface-secondary"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <p className="text-xs text-ink-secondary">
+              <p className="text-xs text-ink-secondary leading-relaxed">
                 The agreed 2-round revision cap has been reached for this milestone. To request additional scope
                 or architectural changes, please submit a formal funded Change Order.
               </p>
 
               <form onSubmit={handleChangeOrder} className="space-y-3 text-xs">
                 <div>
-                  <label className="block font-semibold text-ink-primary mb-1">Change Order Title</label>
+                  <label className="block font-semibold text-ink-primary mb-1.5">Change Order Title</label>
                   <input
                     type="text"
                     required
                     value={changeOrderTitle}
                     onChange={(e) => setChangeOrderTitle(e.target.value)}
                     placeholder="e.g. Additional Integration & UI Enhancements"
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-surface-border focus:border-accent-cobalt outline-none"
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none transition-all shadow-subtle"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-ink-primary mb-1">Scope Description</label>
+                  <label className="block font-semibold text-ink-primary mb-1.5">Scope Description</label>
                   <textarea
                     required
                     rows={3}
                     value={changeOrderDesc}
                     onChange={(e) => setChangeOrderDesc(e.target.value)}
                     placeholder="Describe the additional requested revisions or features..."
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-surface-border focus:border-accent-cobalt outline-none"
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none transition-all shadow-subtle leading-relaxed"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-ink-primary mb-1">
+                  <label className="block font-semibold text-ink-primary mb-1.5">
                     Additional Budget ({project.currency})
                   </label>
                   <input
@@ -593,11 +600,11 @@ export const ClientProjectWorkspace: React.FC = () => {
                     step={100}
                     value={changeOrderAmount}
                     onChange={(e) => setChangeOrderAmount(Number(e.target.value))}
-                    className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-surface-border focus:border-accent-cobalt outline-none"
+                    className="w-full px-3.5 py-2.5 text-xs font-mono rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none transition-all shadow-subtle"
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-surface-border">
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-surface-border/80">
                   <button
                     type="button"
                     onClick={() => setShowChangeOrderModal(false)}
@@ -608,7 +615,7 @@ export const ClientProjectWorkspace: React.FC = () => {
                   <button
                     type="submit"
                     disabled={submittingCO}
-                    className="px-5 py-2.5 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow disabled:opacity-50 transition-all"
                   >
                     {submittingCO ? 'Submitting...' : 'Submit Change Order'}
                   </button>

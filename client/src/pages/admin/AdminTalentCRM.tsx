@@ -3,6 +3,7 @@ import { PortalLayout } from '../../components/layout/PortalLayout';
 import { api } from '../../lib/api';
 import { BenchStatusBadge } from '../../components/shared/StatusBadge';
 import { formatDate, getCategoryLabel } from '../../lib/formatters';
+import { Badge } from '../../components/ui/Badge';
 import {
   Users,
   Search,
@@ -99,7 +100,7 @@ export const AdminTalentCRM: React.FC = () => {
         await fetchTalent();
       }
     } catch (err: any) {
-      alert(err.message || 'Failed to send ping');
+      alert(err.message || 'Failed to dispatch ping');
     }
   };
 
@@ -107,269 +108,242 @@ export const AdminTalentCRM: React.FC = () => {
     <PortalLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="bg-white p-6 rounded-2xl border border-surface-border shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-surface-border shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-accent-cobalt">
-                FOUNDER OPS PIPELINE
-              </span>
-              <span className="text-xs font-mono text-ink-muted">Two-Sided Bench CRM</span>
+            <div className="flex items-center gap-2 mb-2">
+              <Badge variant="primary" dot pulse>
+                TALENT BENCH CRM
+              </Badge>
+              <span className="text-xs font-mono text-ink-muted">Two-Sided Bench Vetting</span>
             </div>
-            <h1 className="text-2xl font-bold text-ink-primary">Talent Bench & Waitlist</h1>
-            <p className="text-xs text-ink-secondary mt-0.5">
-              Review intake, log 15-min vetting call notes, promote to ACTIVE_BENCH, and trigger 72h availability pings.
+            <h1 className="text-2xl sm:text-3xl font-bold text-ink-primary font-sans">
+              Vetted Bench Roster ({talent.length})
+            </h1>
+            <p className="text-xs sm:text-sm text-ink-secondary mt-1">
+              Move freelancers from WAITLISTED → VETTING → ACTIVE_BENCH → ON_PROJECT with warm availability pings.
             </p>
-          </div>
-          <div className="font-mono text-xs text-ink-muted">
-            Total Matched: <strong>{talent.length}</strong> Specialists
           </div>
         </div>
 
-        {/* Filters Strip */}
-        <div className="bg-white p-4 rounded-2xl border border-surface-border shadow-card space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
-            {/* Search */}
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-ink-muted absolute left-3 top-2.5" />
-              <input
-                type="text"
-                placeholder="Search name or email..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-surface-border focus:border-accent-cobalt outline-none"
-              />
-            </div>
+        {/* Filter Toolbar */}
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-surface-border shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="w-4 h-4 text-ink-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by name, skill, or email..."
+              className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none transition-all shadow-subtle"
+            />
+          </div>
 
-            {/* Status Filter */}
-            <div>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none font-mono"
-              >
-                <option value="ALL">Status: All</option>
-                <option value="WAITLISTED">Waitlisted</option>
-                <option value="VETTING">Vetting Call</option>
-                <option value="ACTIVE_BENCH">Active Bench</option>
-                <option value="ON_PROJECT">On Project</option>
-                <option value="ARCHIVED">Archived</option>
-              </select>
-            </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 rounded-xl border border-surface-border bg-white text-ink-primary font-mono focus:border-accent-cobalt outline-none"
+            >
+              <option value="ALL">All Bench Stages</option>
+              <option value="WAITLISTED">Waitlisted</option>
+              <option value="VETTING">In Vetting</option>
+              <option value="ACTIVE_BENCH">Active Bench</option>
+              <option value="ON_PROJECT">On Active Project</option>
+            </select>
 
-            {/* Category Filter */}
-            <div>
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none"
-              >
-                <option value="ALL">Vertical: All</option>
-                <option value="WEB_APP_DEV">Web & App Dev</option>
-                <option value="UI_UX_DESIGN">UI/UX Design</option>
-                <option value="VIDEO_EDITING">Video Editing</option>
-                <option value="DIGITAL_MARKETING">Digital Marketing</option>
-              </select>
-            </div>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="px-3 py-2 rounded-xl border border-surface-border bg-white text-ink-primary focus:border-accent-cobalt outline-none"
+            >
+              <option value="ALL">All 4 Verticals</option>
+              <option value="WEB_APP_DEV">Web & App Dev</option>
+              <option value="UI_UX_DESIGN">UI/UX Design</option>
+              <option value="VIDEO_EDITING">Video Editing</option>
+              <option value="DIGITAL_MARKETING">Digital Marketing</option>
+            </select>
 
-            {/* Availability Filter */}
-            <div>
-              <select
-                value={availabilityFilter}
-                onChange={(e) => setAvailabilityFilter(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none font-mono"
-              >
-                <option value="ALL">Availability: All</option>
-                <option value="AVAILABLE_NOW">Available Now (72h)</option>
-                <option value="LIMITED">In 2 Weeks</option>
-                <option value="UNAVAILABLE">Booked</option>
-              </select>
-            </div>
+            <select
+              value={availabilityFilter}
+              onChange={(e) => setAvailabilityFilter(e.target.value)}
+              className="px-3 py-2 rounded-xl border border-surface-border bg-white text-ink-primary font-mono focus:border-accent-cobalt outline-none"
+            >
+              <option value="ALL">All Capacity States</option>
+              <option value="AVAILABLE_NOW">Available Now (72h)</option>
+              <option value="LIMITED">In 2 Weeks</option>
+              <option value="UNAVAILABLE">Booked</option>
+            </select>
           </div>
         </div>
 
         {/* Talent Bench List */}
-        <div className="bg-white rounded-2xl border border-surface-border shadow-card overflow-hidden">
-          {loading ? (
-            <div className="py-12 text-center text-xs font-mono text-ink-muted">
-              Loading talent list...
-            </div>
-          ) : talent.length === 0 ? (
-            <div className="py-12 text-center text-xs text-ink-muted font-mono">
-              No talent profiles match the selected filters.
+        <div className="bg-white rounded-3xl border border-surface-border shadow-subtle overflow-hidden">
+          {talent.length === 0 ? (
+            <div className="p-12 text-center text-xs font-mono text-ink-muted">
+              No specialists match the current filters.
             </div>
           ) : (
-            <div className="divide-y divide-surface-border">
-              {talent.map((t) => (
-                <div
-                  key={t.id}
-                  className="p-5 hover:bg-surface-subtle/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4"
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-ink-primary">{t.user?.fullName}</h3>
-                      <BenchStatusBadge status={t.status} />
-                      {t.internalRating && (
-                        <span className="text-xs font-mono font-bold text-accent-cobalt">
-                          ⭐ {t.internalRating}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="text-xs text-ink-secondary flex flex-wrap items-center gap-3">
-                      <span>{getCategoryLabel(t.primaryCategory)}</span>
-                      <span>•</span>
-                      <span>{t.user?.country} ({t.user?.timezone})</span>
-                      <span>•</span>
-                      <span>{t.yearsExperience} yrs exp</span>
-                      <span>•</span>
-                      <span className="font-mono text-ink-primary">{t.weeklyHours}h/week</span>
-                    </div>
-
-                    {/* Skills pills */}
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {t.skills?.slice(0, 5).map((skill: string) => (
-                        <span
-                          key={skill}
-                          className="text-[11px] font-mono px-2 py-0.5 rounded bg-surface-secondary text-ink-secondary border border-surface-border"
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-surface-subtle/80 border-b border-surface-border text-ink-muted uppercase font-mono text-[10px]">
+                  <tr>
+                    <th className="py-3.5 px-6">Specialist</th>
+                    <th className="py-3.5 px-6">Vertical & Skills</th>
+                    <th className="py-3.5 px-6">Pipeline Status</th>
+                    <th className="py-3.5 px-6">72h Capacity Ping</th>
+                    <th className="py-3.5 px-6">Rating</th>
+                    <th className="py-3.5 px-6 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-surface-border/80">
+                  {talent.map((t) => (
+                    <tr key={t.id} className="hover:bg-surface-subtle/50 transition-colors">
+                      <td className="py-4 px-6">
+                        <div className="font-bold text-ink-primary font-sans text-sm">{t.user?.fullName}</div>
+                        <div className="text-[11px] text-ink-muted font-mono">{t.user?.email}</div>
+                        <div className="text-[10px] text-ink-secondary mt-0.5">
+                          {t.user?.country} • {t.yearsExperience} yrs exp
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="font-semibold text-ink-primary">
+                          {getCategoryLabel(t.primaryCategory)}
+                        </div>
+                        <div className="flex flex-wrap gap-1 mt-1 max-w-xs">
+                          {t.skills?.slice(0, 3).map((s: string) => (
+                            <span
+                              key={s}
+                              className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-surface-subtle border border-surface-border text-ink-secondary"
+                            >
+                              {s}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <BenchStatusBadge status={t.status} />
+                      </td>
+                      <td className="py-4 px-6 font-mono">
+                        {t.availabilityStatus === 'AVAILABLE_NOW' ? (
+                          <span className="text-accent-emerald font-semibold flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-accent-emerald animate-pulse" />
+                            Available (72h)
+                          </span>
+                        ) : t.availabilityStatus === 'LIMITED' ? (
+                          <span className="text-accent-cobalt font-semibold">In 2 Weeks</span>
+                        ) : (
+                          <span className="text-ink-muted">Booked</span>
+                        )}
+                        <div className="text-[10px] text-ink-muted mt-0.5">
+                          Pinged: {formatDate(t.lastAvailabilityConfirmedAt)}
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-1 text-accent-amber font-mono font-bold">
+                          <Star className="w-3.5 h-3.5 fill-current" />
+                          <span>{t.internalRating || 5}.0</span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 text-right space-x-2">
+                        <button
+                          onClick={() => handleSendPing(t.id)}
+                          className="px-2.5 py-1.5 rounded-xl bg-surface-subtle hover:bg-surface-secondary text-ink-secondary hover:text-ink-primary border border-surface-border text-[11px] font-mono inline-flex items-center gap-1 transition-colors"
+                          title="Send passwordless 72h availability ping"
                         >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Vetting Notes snippet */}
-                    {t.vettingNotes && (
-                      <div className="p-2 bg-surface-subtle rounded-lg border border-surface-border text-[11px] text-ink-secondary">
-                        <strong className="text-ink-primary">Founder Notes:</strong> "{t.vettingNotes}"
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Actions Right Col */}
-                  <div className="flex flex-col sm:flex-row md:flex-col items-start md:items-end gap-2 shrink-0">
-                    {/* Availability Ping indicator */}
-                    <div className="flex items-center gap-2 text-xs font-mono">
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          t.availabilityStatus === 'AVAILABLE_NOW'
-                            ? 'bg-accent-emerald'
-                            : t.availabilityStatus === 'LIMITED'
-                            ? 'bg-accent-cobalt'
-                            : 'bg-gray-400'
-                        }`}
-                      />
-                      <span className="text-ink-secondary text-[11px]">
-                        {t.availabilityStatus.replace('_', ' ')}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2 pt-1">
-                      {/* Portfolios */}
-                      {t.portfolioUrls?.map((url: string, idx: number) => (
-                        <a
-                          key={idx}
-                          href={url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-1.5 rounded-lg bg-surface-secondary hover:bg-surface-border text-ink-secondary text-xs flex items-center gap-1"
-                          title={url}
+                          <Clock className="w-3 h-3 text-accent-cobalt" />
+                          <span>Ping</span>
+                        </button>
+                        <button
+                          onClick={() => handleOpenEdit(t)}
+                          className="px-3 py-1.5 rounded-xl bg-accent-cobalt text-white hover:bg-accent-cobalt-hover text-[11px] font-semibold transition-all shadow-sm"
                         >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                          <span className="text-[10px] font-mono">Link {idx + 1}</span>
-                        </a>
-                      ))}
-
-                      {/* Send Ping */}
-                      <button
-                        onClick={() => handleSendPing(t.id)}
-                        className="p-1.5 px-2.5 rounded-lg bg-blue-50 text-accent-cobalt hover:bg-blue-100 text-xs font-mono font-semibold flex items-center gap-1 border border-blue-200"
-                        title="Send 72h availability check link"
-                      >
-                        <Clock className="w-3.5 h-3.5" />
-                        <span>Ping</span>
-                      </button>
-
-                      {/* Edit / Vetting Button */}
-                      <button
-                        onClick={() => handleOpenEdit(t)}
-                        className="px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800 text-xs font-semibold"
-                      >
-                        Vet & Review
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                          Manage
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
 
-        {/* Vetting Call & Status Modal */}
+        {/* Edit Talent Drawer / Modal */}
         {selectedTalent && (
-          <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-white rounded-2xl p-6 border border-surface-border shadow-elevated space-y-4">
-              <div className="flex items-center justify-between border-b border-surface-border pb-3">
-                <div>
-                  <h3 className="text-base font-bold text-ink-primary">
-                    Vetting & Status: {selectedTalent.user?.fullName}
-                  </h3>
-                  <div className="text-[11px] font-mono text-ink-muted">
-                    {selectedTalent.user?.email} • {selectedTalent.user?.country}
-                  </div>
-                </div>
+          <div className="fixed inset-0 z-50 bg-slate-900/30 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 border border-surface-border shadow-smooth space-y-4 animate-in fade-in zoom-in-95 duration-150">
+              <div className="flex items-center justify-between border-b border-surface-border/80 pb-3">
+                <h3 className="text-base font-bold text-ink-primary font-sans">
+                  Manage Specialist Bench Stage
+                </h3>
                 <button
                   onClick={() => setSelectedTalent(null)}
-                  className="p-1 rounded-lg text-ink-muted hover:text-ink-primary"
+                  className="p-1.5 rounded-xl text-ink-muted hover:text-ink-primary hover:bg-surface-secondary"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
+              <div className="p-3.5 rounded-2xl bg-surface-subtle/80 border border-surface-border text-xs">
+                <div className="font-bold text-ink-primary font-sans text-sm">{selectedTalent.user?.fullName}</div>
+                <div className="text-[11px] text-ink-muted font-mono">{selectedTalent.user?.email}</div>
+                <div className="flex gap-2 mt-2">
+                  {selectedTalent.portfolioUrls?.map((url: string, i: number) => (
+                    <a
+                      key={i}
+                      href={url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-accent-cobalt underline text-[10px] inline-flex items-center gap-0.5"
+                    >
+                      <span>Link {i + 1}</span>
+                      <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+
               <form onSubmit={handleSaveTalent} className="space-y-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-ink-primary mb-1">Bench Status</label>
+                  <label className="block font-semibold text-ink-primary mb-1.5">Bench Pipeline Status</label>
                   <select
                     value={newStatus}
                     onChange={(e) => setNewStatus(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none font-mono"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none font-mono transition-all shadow-subtle"
                   >
                     <option value="WAITLISTED">WAITLISTED (Intake received)</option>
-                    <option value="VETTING">VETTING (15-min call in progress)</option>
-                    <option value="ACTIVE_BENCH">ACTIVE_BENCH (Vetted & Warm)</option>
-                    <option value="ON_PROJECT">ON_PROJECT (Assigned to pod)</option>
-                    <option value="ARCHIVED">ARCHIVED (Inactive)</option>
+                    <option value="VETTING">VETTING (Founder call scheduled)</option>
+                    <option value="ACTIVE_BENCH">ACTIVE_BENCH (Available for pod allocation)</option>
+                    <option value="ON_PROJECT">ON_PROJECT (Currently engaged in active SOW)</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-ink-primary mb-1">
-                    Internal Delivery Rating (1.0 to 5.0)
-                  </label>
+                  <label className="block font-semibold text-ink-primary mb-1.5">Internal Rating (1-5)</label>
                   <input
                     type="number"
-                    step="0.1"
                     min="1"
                     max="5"
                     value={internalRating}
                     onChange={(e) => setInternalRating(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl border border-surface-border font-mono focus:border-accent-cobalt outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none font-mono transition-all shadow-subtle"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-ink-primary mb-1">
-                    15-Minute Vetting Call Notes & Technical Appraisal
+                  <label className="block font-semibold text-ink-primary mb-1.5">
+                    Founder Vetting & Portfolio Notes
                   </label>
                   <textarea
-                    rows={4}
+                    rows={3}
                     value={vettingNotes}
                     onChange={(e) => setVettingNotes(e.target.value)}
-                    placeholder="Log architectural depth, communication rating, verified past projects..."
-                    className="w-full px-3 py-2 rounded-xl border border-surface-border focus:border-accent-cobalt outline-none leading-relaxed"
+                    placeholder="Interview feedback, verified code depth, communication score..."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none transition-all shadow-subtle leading-relaxed"
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-surface-border">
+                <div className="flex justify-end gap-2 pt-2 border-t border-surface-border/80">
                   <button
                     type="button"
                     onClick={() => setSelectedTalent(null)}
@@ -380,9 +354,9 @@ export const AdminTalentCRM: React.FC = () => {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="px-5 py-2.5 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow disabled:opacity-50 transition-all"
                   >
-                    {saving ? 'Updating...' : 'Save & Update Bench Status'}
+                    {saving ? 'Saving...' : 'Update Specialist'}
                   </button>
                 </div>
               </form>

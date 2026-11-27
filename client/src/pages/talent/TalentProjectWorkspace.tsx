@@ -4,6 +4,7 @@ import { PortalLayout } from '../../components/layout/PortalLayout';
 import { api } from '../../lib/api';
 import { MilestoneStatusBadge, PayoutStatusBadge } from '../../components/shared/StatusBadge';
 import { formatCurrency, formatDate } from '../../lib/formatters';
+import { Badge } from '../../components/ui/Badge';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -15,6 +16,7 @@ import {
   Clock,
   Send,
   Layers,
+  Sparkles,
 } from 'lucide-react';
 
 export const TalentProjectWorkspace: React.FC = () => {
@@ -86,164 +88,167 @@ export const TalentProjectWorkspace: React.FC = () => {
   if (error || !data) {
     return (
       <PortalLayout>
-        <div className="p-8 bg-white rounded-2xl border border-surface-border text-center space-y-4">
-          <AlertCircle className="w-8 h-8 text-rose-500 mx-auto" />
-          <h2 className="text-xl font-bold">{error || 'Project not found'}</h2>
+        <div className="p-8 sm:p-12 rounded-3xl bg-white border border-surface-border text-center space-y-4 shadow-subtle">
+          <AlertCircle className="w-8 h-8 text-accent-rose mx-auto" />
+          <h2 className="text-xl font-bold font-sans">{error || 'Project Not Found'}</h2>
           <Link
             to="/talent/dashboard"
-            className="text-xs font-mono text-accent-cobalt inline-flex items-center gap-1"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-accent-cobalt hover:underline"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Dashboard</span>
+            <span>Return to Dashboard</span>
           </Link>
         </div>
       </PortalLayout>
     );
   }
 
-  const { project, membership } = data;
+  const { project, myMembership } = data;
 
   return (
     <PortalLayout>
       <div className="space-y-6">
         {/* Workspace Header */}
-        <div className="bg-white p-6 rounded-2xl border border-surface-border shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-surface-border shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <Link
               to="/talent/dashboard"
-              className="text-xs font-mono text-ink-muted hover:text-ink-primary inline-flex items-center gap-1 mb-2"
+              className="text-xs font-mono text-ink-muted hover:text-ink-primary inline-flex items-center gap-1 mb-2.5 transition-colors"
             >
               <ArrowLeft className="w-3 h-3" />
-              <span>Dashboard</span>
+              <span>Back to Dashboard</span>
             </Link>
-            <h1 className="text-2xl font-bold text-ink-primary">{project.title}</h1>
-            <p className="text-xs text-ink-secondary mt-1">
-              Client: <strong>{project.client?.companyName}</strong> • Lead Founder PM:{' '}
-              <strong>{project.leadAdmin?.fullName || 'Alex Morgan'}</strong>
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 self-start md:self-center">
-            <div className="p-3 bg-surface-subtle rounded-xl border border-surface-border text-right">
-              <span className="text-[10px] font-mono text-ink-muted block uppercase">Your Role Payout</span>
-              <span className="text-base font-bold font-mono text-accent-emerald">
-                {formatCurrency(membership.payoutMinorUnits, project.currency)}
+            <div className="flex items-center gap-2 mb-1.5">
+              <Badge variant="primary" dot pulse>
+                ACTIVE POD WORKSPACE
+              </Badge>
+              <span className="text-xs font-mono text-ink-muted">
+                Role: <strong>{myMembership?.roleTitle}</strong>
               </span>
             </div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-ink-primary font-sans">{project.title}</h1>
+          </div>
+
+          <div className="text-left md:text-right bg-accent-emerald-light/60 p-4 sm:p-5 rounded-2xl border border-accent-emerald-border shrink-0">
+            <span className="text-[10px] font-mono text-emerald-800 uppercase block font-semibold">
+              YOUR FIXED ROLE PAYOUT
+            </span>
+            <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-950 mt-0.5">
+              {formatCurrency(myMembership?.payoutMinorUnits, project.currency)}
+            </div>
+            <span className="text-[11px] font-mono text-emerald-700 block mt-0.5">
+              ({myMembership?.sharePercent}% of client budget)
+            </span>
           </div>
         </div>
 
-        {/* Milestones Delivery & QA Status List */}
-        <div className="bg-white p-6 rounded-2xl border border-surface-border shadow-card space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-ink-primary uppercase tracking-wider font-mono">
-              Milestone Checklist & Founder QA Gate
-            </h3>
-            <span className="text-xs font-mono text-ink-muted">
-              Revision Cap: {project.revisionCapPerMilestone} rounds max
-            </span>
+        {/* Milestones & Deliverables Submissions Strip */}
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-surface-border shadow-subtle space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-surface-border/80 pb-4">
+            <div>
+              <h3 className="text-base font-bold text-ink-primary font-sans">
+                Milestone Deliverables & QA Review Gate
+              </h3>
+              <p className="text-xs text-ink-secondary mt-0.5 leading-relaxed">
+                Submit links to PRs, Figma files, or video renders. Founders review and approve before client review.
+              </p>
+            </div>
+            <Badge variant="primary">
+              {project.milestones?.length || 3} Sprints
+            </Badge>
           </div>
 
           <div className="space-y-4">
             {project.milestones?.map((m: any) => {
-              const myPayout = m.payouts?.[0];
-              const latestSubmission = m.deliverableSubmissions?.[0];
+              const submission = m.deliverableSubmissions?.[0];
+              const isSubmitted = !!submission;
 
               return (
                 <div
                   key={m.id}
-                  className="p-5 rounded-xl border border-surface-border bg-surface-subtle space-y-4"
+                  className="p-5 sm:p-6 rounded-2xl border border-surface-border bg-surface-subtle/70 hover:bg-white hover:border-slate-300 hover:shadow-subtle transition-all duration-200 space-y-4"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-6 h-6 rounded-full bg-slate-900 text-white font-mono text-xs font-bold flex items-center justify-center">
-                        {m.sequenceOrder}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <span className="w-8 h-8 rounded-xl bg-accent-cobalt-light text-accent-cobalt border border-accent-cobalt-border font-mono text-xs font-bold flex items-center justify-center shrink-0">
+                        0{m.sequenceOrder}
                       </span>
                       <div>
-                        <h4 className="text-sm font-bold text-ink-primary">{m.title}</h4>
-                        <div className="text-xs text-ink-secondary mt-0.5">
+                        <h4 className="text-sm font-bold text-ink-primary font-sans">{m.title}</h4>
+                        <p className="text-xs text-ink-secondary mt-0.5 leading-relaxed">
                           {m.deliverablesSummary}
-                        </div>
+                        </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+
+                    <div className="flex items-center gap-3 shrink-0">
                       <MilestoneStatusBadge status={m.status} />
                       <div className="text-right">
-                        <div className="text-xs font-bold font-mono text-ink-primary">
+                        <div className="text-sm font-bold font-mono text-ink-primary">
                           {formatCurrency(m.amountMinorUnits, project.currency)}
                         </div>
-                        <span className="text-[10px] font-mono text-ink-muted">{m.percentOfBudget}% Budget</span>
+                        <span className="text-[10px] font-mono text-ink-muted">{m.percentOfBudget}% Escrow</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Payout & QA Status Strip */}
-                  <div className="p-3 bg-white rounded-lg border border-surface-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="text-ink-muted font-mono">Your Milestone Payout:</span>
-                      <strong className="font-mono text-accent-emerald">
-                        {myPayout ? formatCurrency(myPayout.netAmountMinorUnits, project.currency) : '—'}
-                      </strong>
-                      {myPayout && <PayoutStatusBadge status={myPayout.status} />}
+                  {/* Submission Status or Action */}
+                  <div className="p-3.5 bg-white rounded-xl border border-surface-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-subtle">
+                    <div>
+                      {isSubmitted ? (
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+                          <span className="font-mono text-ink-primary">
+                            Deliverable submitted ({formatDate(submission.createdAt)})
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-ink-muted font-mono">
+                          Deliverable pending submission for founder QA review.
+                        </span>
+                      )}
                     </div>
 
-                    {/* Action Button: Submit Deliverable */}
                     <div>
-                      {m.status === 'IN_PROGRESS' || m.status === 'REVISION_REQUESTED' ? (
+                      {m.status === 'IN_PROGRESS' || m.status === 'FUNDED_ESCROW' ? (
                         <button
                           onClick={() => setSelectedMilestoneId(m.id)}
-                          className="px-3.5 py-1.5 rounded-lg bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm flex items-center gap-1.5"
+                          className="px-4 py-2 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow flex items-center gap-1.5 transition-all"
                         >
                           <Upload className="w-3.5 h-3.5" />
-                          <span>Submit Deliverable for QA</span>
+                          <span>Submit Deliverable for M{m.sequenceOrder}</span>
                         </button>
-                      ) : m.status === 'IN_QA_REVIEW' ? (
-                        <span className="text-[11px] font-mono text-purple-700 bg-purple-50 px-2 py-1 rounded border border-purple-200">
-                          Founder QA Review in Progress
-                        </span>
                       ) : m.status === 'APPROVED_PAID' ? (
-                        <span className="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-1 rounded border border-emerald-200 flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          <span>Approved & Signed-Off</span>
-                        </span>
+                        <Badge variant="success" dot>
+                          Milestone Approved & Released
+                        </Badge>
                       ) : (
-                        <span className="text-[11px] font-mono text-ink-muted">Upcoming Milestone</span>
+                        <span className="text-[11px] font-mono text-ink-muted">
+                          Status: {m.status}
+                        </span>
                       )}
                     </div>
                   </div>
 
-                  {/* Submission and QA Feedback Block */}
-                  {latestSubmission && (
-                    <div className="p-3.5 rounded-lg bg-blue-50/50 border border-blue-200 space-y-2 text-xs">
+                  {/* Existing Deliverable Preview */}
+                  {submission && (
+                    <div className="p-4 rounded-xl bg-surface-subtle/80 border border-surface-border text-xs space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <span className="font-semibold text-accent-cobalt flex items-center gap-1.5">
+                        <a
+                          href={submission.deliverableUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-mono text-accent-cobalt underline hover:text-accent-cobalt-hover inline-flex items-center gap-1.5"
+                        >
                           <ExternalLink className="w-3.5 h-3.5" />
-                          <a
-                            href={latestSubmission.deliverableUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="underline hover:text-blue-800"
-                          >
-                            Latest Submission Link
-                          </a>
-                        </span>
-                        <span className="text-[10px] font-mono text-ink-muted">
-                          QA Status: <strong>{latestSubmission.qaStatus}</strong>
-                        </span>
+                          <span>{submission.deliverableUrl}</span>
+                        </a>
+                        <Badge variant="secondary" size="sm">{submission.reviewStatus}</Badge>
                       </div>
-                      {latestSubmission.notes && (
-                        <p className="text-ink-secondary text-[11px]">Notes: "{latestSubmission.notes}"</p>
-                      )}
-                      {latestSubmission.qaFeedback && (
-                        <div className="p-2 bg-white rounded border border-blue-100 text-[11px] text-ink-primary">
-                          <strong className="text-accent-cobalt">Founder QA Feedback:</strong>{' '}
-                          {latestSubmission.qaFeedback}
-                        </div>
-                      )}
-                      {latestSubmission.clientFeedback && (
-                        <div className="p-2 bg-purple-50 rounded border border-purple-200 text-[11px] text-purple-900">
-                          <strong>Client Feedback:</strong> {latestSubmission.clientFeedback}
-                        </div>
+                      {submission.notes && (
+                        <p className="text-ink-secondary text-[11px] leading-relaxed">
+                          Notes: "{submission.notes}"
+                        </p>
                       )}
                     </div>
                   )}
@@ -255,43 +260,44 @@ export const TalentProjectWorkspace: React.FC = () => {
 
         {/* Deliverable Submission Modal */}
         {selectedMilestoneId && (
-          <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-white rounded-2xl p-6 border border-surface-border shadow-elevated space-y-4">
-              <h3 className="text-lg font-bold text-ink-primary">Submit Milestone Deliverable</h3>
-              <p className="text-xs text-ink-secondary">
-                Submit your release URL (GitHub PR/tag, Figma file, preview link). Our 2 founders will QA review
-                the deliverable before exposing it to the client.
+          <div className="fixed inset-0 z-50 bg-slate-900/30 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 border border-surface-border shadow-smooth space-y-4 animate-in fade-in zoom-in-95 duration-150">
+              <h3 className="text-base font-bold text-ink-primary font-sans">
+                Submit Deliverable for Founder QA Gate
+              </h3>
+              <p className="text-xs text-ink-secondary leading-relaxed">
+                Your submission will be tested and reviewed by Alex & Dev before being presented to the client.
               </p>
 
-              <form onSubmit={handleSubmitDeliverable} className="space-y-4">
+              <form onSubmit={handleSubmitDeliverable} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-xs font-semibold text-ink-primary mb-1">
-                    Deliverable / Preview URL *
+                  <label className="block font-semibold text-ink-primary mb-1.5">
+                    Deliverable URL (GitHub PR / Figma / Video / Cloudflare Link) *
                   </label>
                   <input
                     type="url"
                     required
                     value={deliverableUrl}
                     onChange={(e) => setDeliverableUrl(e.target.value)}
-                    placeholder="https://github.com/... or https://figma.com/..."
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-surface-border focus:border-accent-cobalt outline-none"
+                    placeholder="https://github.com/my-org/repo/pull/12"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none transition-all shadow-subtle"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-ink-primary mb-1">
+                  <label className="block font-semibold text-ink-primary mb-1.5">
                     Release Notes & Testing Instructions
                   </label>
                   <textarea
                     rows={3}
                     value={submissionNotes}
                     onChange={(e) => setSubmissionNotes(e.target.value)}
-                    placeholder="Explain what was built, how to test, and any environment details..."
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-surface-border focus:border-accent-cobalt outline-none"
+                    placeholder="Explain what was implemented, how to run tests, and any key architectural decisions..."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-surface-border bg-white focus:border-accent-cobalt outline-none transition-all shadow-subtle leading-relaxed"
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-surface-border">
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-surface-border/80">
                   <button
                     type="button"
                     onClick={() => setSelectedMilestoneId(null)}
@@ -301,10 +307,10 @@ export const TalentProjectWorkspace: React.FC = () => {
                   </button>
                   <button
                     type="submit"
-                    disabled={submitting || !deliverableUrl.trim()}
-                    className="px-5 py-2 text-xs font-semibold rounded-xl bg-accent-cobalt text-white hover:bg-accent-cobalt-hover shadow-sm disabled:opacity-50"
+                    disabled={submitting}
+                    className="px-5 py-2.5 rounded-xl bg-accent-cobalt text-white text-xs font-semibold hover:bg-accent-cobalt-hover shadow-sm hover:shadow-glow disabled:opacity-50 transition-all"
                   >
-                    {submitting ? 'Submitting...' : 'Send to Founder QA Gate'}
+                    {submitting ? 'Submitting...' : 'Submit to Founder QA'}
                   </button>
                 </div>
               </form>

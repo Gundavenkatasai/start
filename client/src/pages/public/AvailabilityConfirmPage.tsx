@@ -4,7 +4,8 @@ import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
 import { api } from '../../lib/api';
 import { AvailabilityStatus } from '../../types';
-import { ShieldCheck, CheckCircle2, Clock, Calendar, Ban, ArrowRight, Loader2 } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, Clock, Calendar, Ban, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { Badge } from '../../components/ui/Badge';
 
 export const AvailabilityConfirmPage: React.FC = () => {
   const { token } = useParams<{ token: string }>();
@@ -54,23 +55,23 @@ export const AvailabilityConfirmPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface-subtle flex flex-col">
+    <div className="min-h-screen bg-[#FAFAFA] flex flex-col">
       <Navbar />
 
-      <main className="flex-1 flex items-center justify-center p-4 py-16">
-        <div className="max-w-md w-full bg-white p-6 sm:p-8 rounded-2xl border border-surface-border shadow-elevated text-center space-y-6">
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-accent-cobalt flex items-center justify-center mx-auto">
+      <main className="flex-1 flex items-center justify-center p-4 py-20">
+        <div className="max-w-md w-full bg-white p-6 sm:p-8 rounded-3xl border border-surface-border shadow-smooth text-center space-y-6">
+          <div className="w-12 h-12 rounded-2xl bg-accent-cobalt-light text-accent-cobalt border border-accent-cobalt-border flex items-center justify-center mx-auto shadow-subtle">
             <Clock className="w-6 h-6" />
           </div>
 
           <div>
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-accent-cobalt px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200">
-              One-Click Bench Ping
-            </span>
-            <h1 className="text-2xl font-bold text-ink-primary mt-2">
+            <Badge variant="primary" dot pulse>
+              ONE-CLICK BENCH PING
+            </Badge>
+            <h1 className="text-2xl font-bold text-ink-primary font-sans mt-2">
               Update Project Capacity
             </h1>
-            <p className="text-xs text-ink-secondary mt-1">
+            <p className="text-xs text-ink-secondary mt-1 leading-relaxed">
               Passwordless confirmation. Keeps the bench warm for upcoming client project pods.
             </p>
           </div>
@@ -81,46 +82,46 @@ export const AvailabilityConfirmPage: React.FC = () => {
               <span className="text-xs font-mono">Verifying secure token...</span>
             </div>
           ) : error ? (
-            <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 text-left">
+            <div className="p-4 rounded-2xl bg-accent-rose-light border border-accent-rose-border text-xs text-rose-800 text-left">
               {error}
             </div>
           ) : (
             <div className="space-y-4 text-left">
-              <div className="p-3 bg-surface-subtle rounded-xl border border-surface-border text-xs">
+              <div className="p-3.5 bg-surface-subtle/80 rounded-2xl border border-surface-border text-xs">
                 <div className="text-ink-secondary">Specialist:</div>
-                <div className="text-sm font-bold text-ink-primary">{talentData.fullName}</div>
+                <div className="text-sm font-bold text-ink-primary font-sans">{talentData.fullName}</div>
                 <div className="text-[11px] text-ink-muted font-mono mt-0.5">
                   {talentData.country} ({talentData.timezone})
                 </div>
               </div>
 
               {successMessage && (
-                <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2">
+                <div className="p-3.5 rounded-2xl bg-accent-emerald-light border border-accent-emerald-border text-xs text-emerald-800 flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-accent-emerald shrink-0" />
                   <span>{successMessage}</span>
                 </div>
               )}
 
-              <div className="space-y-2.5 pt-2">
+              <div className="space-y-2.5 pt-1">
                 {/* Option 1: Available Now */}
                 <button
                   onClick={() => handleUpdate('AVAILABLE_NOW')}
                   disabled={updating}
-                  className={`w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between ${
+                  className={`w-full p-4 rounded-2xl border text-left transition-all duration-150 flex items-center justify-between ${
                     talentData.currentAvailability === 'AVAILABLE_NOW'
-                      ? 'bg-emerald-50/80 border-accent-emerald text-emerald-950 shadow-sm'
-                      : 'bg-white border-surface-border hover:border-accent-emerald text-ink-primary'
+                      ? 'bg-accent-emerald-light/60 border-accent-emerald text-emerald-950 shadow-subtle'
+                      : 'bg-white border-surface-border hover:border-slate-300 text-ink-primary hover:bg-surface-subtle'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-3 h-3 rounded-full bg-accent-emerald shrink-0" />
+                    <span className="w-3 h-3 rounded-full bg-accent-emerald shrink-0 animate-pulse" />
                     <div>
-                      <div className="text-xs font-bold">Available Now (Next 72h)</div>
+                      <div className="text-xs font-bold font-sans">Available Now (Next 72h)</div>
                       <div className="text-[11px] text-ink-secondary">Ready to review SOW and join a pod immediately</div>
                     </div>
                   </div>
                   {talentData.currentAvailability === 'AVAILABLE_NOW' && (
-                    <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+                    <CheckCircle2 className="w-4 h-4 text-accent-emerald shrink-0" />
                   )}
                 </button>
 
@@ -128,21 +129,21 @@ export const AvailabilityConfirmPage: React.FC = () => {
                 <button
                   onClick={() => handleUpdate('LIMITED')}
                   disabled={updating}
-                  className={`w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between ${
+                  className={`w-full p-4 rounded-2xl border text-left transition-all duration-150 flex items-center justify-between ${
                     talentData.currentAvailability === 'LIMITED'
-                      ? 'bg-blue-50/80 border-accent-cobalt text-blue-950 shadow-sm'
-                      : 'bg-white border-surface-border hover:border-accent-cobalt text-ink-primary'
+                      ? 'bg-accent-cobalt-light/60 border-accent-cobalt text-blue-950 shadow-subtle'
+                      : 'bg-white border-surface-border hover:border-slate-300 text-ink-primary hover:bg-surface-subtle'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <span className="w-3 h-3 rounded-full bg-accent-cobalt shrink-0" />
                     <div>
-                      <div className="text-xs font-bold">Available in 2 Weeks</div>
+                      <div className="text-xs font-bold font-sans">Available in 2 Weeks</div>
                       <div className="text-[11px] text-ink-secondary">Currently wrapping up existing client commitments</div>
                     </div>
                   </div>
                   {talentData.currentAvailability === 'LIMITED' && (
-                    <CheckCircle2 className="w-4 h-4 text-accent-cobalt" />
+                    <CheckCircle2 className="w-4 h-4 text-accent-cobalt shrink-0" />
                   )}
                 </button>
 
@@ -150,21 +151,21 @@ export const AvailabilityConfirmPage: React.FC = () => {
                 <button
                   onClick={() => handleUpdate('UNAVAILABLE')}
                   disabled={updating}
-                  className={`w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between ${
+                  className={`w-full p-4 rounded-2xl border text-left transition-all duration-150 flex items-center justify-between ${
                     talentData.currentAvailability === 'UNAVAILABLE'
-                      ? 'bg-gray-100 border-gray-400 text-gray-900 shadow-sm'
-                      : 'bg-white border-surface-border hover:border-gray-400 text-ink-primary'
+                      ? 'bg-surface-secondary border-slate-400 text-ink-primary shadow-subtle'
+                      : 'bg-white border-surface-border hover:border-slate-300 text-ink-primary hover:bg-surface-subtle'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-3 h-3 rounded-full bg-gray-400 shrink-0" />
+                    <span className="w-3 h-3 rounded-full bg-ink-muted shrink-0" />
                     <div>
-                      <div className="text-xs font-bold">Currently Booked</div>
+                      <div className="text-xs font-bold font-sans">Currently Booked</div>
                       <div className="text-[11px] text-ink-secondary">Fully occupied for the next 30+ days</div>
                     </div>
                   </div>
                   {talentData.currentAvailability === 'UNAVAILABLE' && (
-                    <CheckCircle2 className="w-4 h-4 text-gray-600" />
+                    <CheckCircle2 className="w-4 h-4 text-ink-muted shrink-0" />
                   )}
                 </button>
               </div>
@@ -172,7 +173,7 @@ export const AvailabilityConfirmPage: React.FC = () => {
               <div className="pt-4 text-center">
                 <Link
                   to="/login"
-                  className="text-xs text-ink-secondary hover:text-ink-primary inline-flex items-center gap-1 font-mono"
+                  className="text-xs text-ink-secondary hover:text-ink-primary inline-flex items-center gap-1 font-mono transition-colors"
                 >
                   <span>Go to full Talent Console sign-in</span>
                   <ArrowRight className="w-3 h-3" />
